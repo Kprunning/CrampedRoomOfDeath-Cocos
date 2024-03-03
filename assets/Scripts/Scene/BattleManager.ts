@@ -5,7 +5,8 @@ import levels, {ILevel} from '../../Levels'
 import {TILE_HEIGHT, TILE_WIDTH} from '../Tile/TileManager'
 import DataManager from '../../Runtime/DataManager'
 import EventManager from '../../Runtime/EventManager'
-import {EventEnum} from '../../Enums'
+import {EVENT_ENUM} from '../../Enums'
+import {PlayerManager} from '../Player/PlayerManager'
 
 const {ccclass, property} = _decorator
 
@@ -15,24 +16,32 @@ export class BattleManager extends Component {
   private level: ILevel
 
   onLoad() {
-    EventManager.Instance.on(EventEnum.NEXT_LEVEL, this.nextLevel, this)
+    EventManager.Instance.on(EVENT_ENUM.NEXT_LEVEL, this.nextLevel, this)
   }
 
   onDestroy() {
-    EventManager.Instance.off(EventEnum.NEXT_LEVEL, this.nextLevel)
+    EventManager.Instance.off(EVENT_ENUM.NEXT_LEVEL, this.nextLevel)
   }
 
 
   start() {
     this.generateStage()
     this.initLevel()
+    this.generatePlayer()
   }
 
-
+  // 生成舞台
   private generateStage() {
-    // 生成舞台
     this.stage = createUINode()
     this.stage.setParent(this.node)
+  }
+
+  // 生成玩家
+  private generatePlayer() {
+    const player = createUINode()
+    player.setParent(this.stage)
+    const playerManager = player.addComponent(PlayerManager)
+    playerManager.init()
   }
 
   private initLevel() {

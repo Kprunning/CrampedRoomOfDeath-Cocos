@@ -31,11 +31,11 @@ export default class EventManager extends Singleton {
     }
   }
 
-  emit(eventName: string) {
+  emit(eventName: string, ...params: unknown[]) {
     if (this.eventDic.has(eventName)) {
       const funcArr = this.eventDic.get(eventName)
       funcArr.forEach(({ctx, func}) => {
-        ctx ? func.apply(ctx) : func()
+        ctx ? func.apply(ctx, params) : func(...params)
       })
     }
   }

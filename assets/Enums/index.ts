@@ -11,6 +11,16 @@ export enum TILE_TYPE_ENUM {
   CLIFF_RIGHT = 'CLIFF_RIGHT'
 }
 
-export enum EventEnum {
-  NEXT_LEVEL = 'NEXT_LEVEL'
+export enum EVENT_ENUM {
+  NEXT_LEVEL = 'NEXT_LEVEL',
+  CTRL_DIRECTION = 'CTRL_DIRECTION'
+}
+
+export enum CTRL_DIRECTION_ENUM {
+  TOP = 'TOP',
+  BOTTOM = 'BOTTOM',
+  RIGHT = 'RIGHT',
+  LEFT = 'LEFT',
+  TURN_LEFT = 'TURN_LEFT',
+  TURN_RIGHT = 'TURN_RIGHT'
 }
