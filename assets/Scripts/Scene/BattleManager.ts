@@ -4,6 +4,8 @@ import {createUINode} from '../../Utils'
 import levels, {ILevel} from '../../Levels'
 import {TILE_HEIGHT, TILE_WIDTH} from '../Tile/TileManager'
 import DataManager from '../../Runtime/DataManager'
+import EventManager from '../../Runtime/EventManager'
+import {EventEnum} from '../../Enums'
 
 const {ccclass, property} = _decorator
 
@@ -11,6 +13,14 @@ const {ccclass, property} = _decorator
 export class BattleManager extends Component {
   private stage: Node
   private level: ILevel
+
+  onLoad() {
+    EventManager.Instance.on(EventEnum.NEXT_LEVEL, this.nextLevel, this)
+  }
+
+  onDestroy() {
+    EventManager.Instance.off(EventEnum.NEXT_LEVEL, this.nextLevel)
+  }
 
 
   start() {
@@ -26,14 +36,28 @@ export class BattleManager extends Component {
   }
 
   private initLevel() {
-    this.level = levels[`level${1}`]
-    if (this.level) {
-      const {mapInfo} = this.level
+    const level = levels[`level${DataManager.Instance.levelIndex}`]
+    if (level) {
+      this.clearLevel()
+      this.level = level
+      const {mapInfo} = level
       DataManager.Instance.mapInfo = mapInfo
       DataManager.Instance.mapRowCount = mapInfo.length || 0
       DataManager.Instance.mapColumnCount = mapInfo[0].length || 0
       this.generateTileMap()
     }
+  }
+
+  nextLevel() {
+    DataManager.Instance.levelIndex++
+    this.initLevel()
+  }
+
+  clearLevel() {
+    // 切换关卡时,清空旧数据
+    this.stage.destroyAllChildren()
+    // 重置数据中心
+    DataManager.Instance.reset()
   }
 
   private generateTileMap() {
