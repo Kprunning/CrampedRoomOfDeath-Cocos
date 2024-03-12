@@ -1,56 +1,29 @@
-import {_decorator, Component, Sprite, UITransform} from 'cc'
-import {TILE_HEIGHT, TILE_WIDTH} from '../Tile/TileManager'
-import {CTRL_DIRECTION_ENUM, DIRECTION_ENUM, DIRECTION_ORDER_ENUM, ENTITY_STATE_ENUM, EVENT_ENUM, PARAMS_NAME_ENUM} from '../../Enums'
+import {_decorator} from 'cc'
+import {CTRL_DIRECTION_ENUM, DIRECTION_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM} from '../../Enums'
 import EventManager from '../../Runtime/EventManager'
 import {PlayerStateMachine} from './PlayerStateMachine'
+import EntityManager from '../../Base/EntityManager'
 
 const {ccclass, property} = _decorator
 
 
 @ccclass('PlayerManager')
-export class PlayerManager extends Component {
-
-  x = 0
-  y = 0
+export class PlayerManager extends EntityManager {
   targetX = 0
   targetY = 0
   private readonly speed = 1 / 10
-  fsm: PlayerStateMachine = null
 
-  private _direction: DIRECTION_ENUM
-  private _state: ENTITY_STATE_ENUM
-
-
-  get state(): ENTITY_STATE_ENUM {
-    return this._state
-  }
-
-  set state(value: ENTITY_STATE_ENUM) {
-    this._state = value
-    this.fsm.setParams(this._state, true)
-  }
-
-  get direction(): DIRECTION_ENUM {
-    return this._direction
-  }
-
-  set direction(value: DIRECTION_ENUM) {
-    this._direction = value
-    this.fsm.setParams(PARAMS_NAME_ENUM.DIRECTION, DIRECTION_ORDER_ENUM[this._direction])
-  }
 
   async init() {
-    const sprite = this.addComponent(Sprite)
-    // 自定义大小
-    sprite.sizeMode = Sprite.SizeMode.CUSTOM
-    const uiTransform = this.addComponent(UITransform)
-    uiTransform.setContentSize(TILE_WIDTH * 4, TILE_HEIGHT * 4)
-
     this.fsm = this.addComponent(PlayerStateMachine)
     await this.fsm.init()
-    this.state = ENTITY_STATE_ENUM.IDLE
-    this.direction = DIRECTION_ENUM.TOP
-
+    super.init({
+      x: 0,
+      y: 0,
+      type: ENTITY_TYPE_ENUM.PLAYER,
+      direction: DIRECTION_ENUM.TOP,
+      state: ENTITY_STATE_ENUM.IDLE
+    })
     EventManager.Instance.on(EVENT_ENUM.CTRL_DIRECTION, this.move, this)
   }
 
@@ -58,9 +31,9 @@ export class PlayerManager extends Component {
     EventManager.Instance.off(EVENT_ENUM.CTRL_DIRECTION, this.move)
   }
 
-  protected update(dt: number) {
+  update() {
     this.updateXY()
-    this.node.setPosition(TILE_WIDTH * this.x + 1.5 * TILE_WIDTH, TILE_HEIGHT * this.y - 1.5 * TILE_HEIGHT)
+    super.update()
   }
 
   move(ctrlDirection: CTRL_DIRECTION_ENUM) {
