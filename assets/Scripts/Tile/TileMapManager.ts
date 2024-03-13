@@ -1,8 +1,8 @@
 import {_decorator, Component} from 'cc'
 import {createUINode, randomByRange} from '../../Utils'
-import {TileManager} from './TileManager'
 import DataManager from '../../Runtime/DataManager'
 import ResourceManager from '../../Runtime/ResourceManager'
+import TileManager from './TileManager'
 
 const {ccclass, property} = _decorator
 
@@ -13,8 +13,10 @@ export class TileMapManager extends Component {
     // 获取第一关
     const {mapInfo} = DataManager.Instance
     const spriteFrames = await ResourceManager.Instance.loadDir('/texture/tile/tile')
+    DataManager.Instance.tileInfo = []
     for (let i = 0; i < mapInfo.length; i++) {
       const column = mapInfo[i]
+      DataManager.Instance.tileInfo[i] = []
       for (let j = 0; j < column.length; j++) {
         const item = column[j]
         // 跳过空内容
@@ -32,7 +34,8 @@ export class TileMapManager extends Component {
 
         const node = createUINode()
         const tileManager = node.addComponent(TileManager)
-        tileManager.init(spriteFrame, i, j)
+        tileManager.init(item.type, spriteFrame, i, j)
+        DataManager.Instance.tileInfo[i][j] = tileManager
         node.setParent(this.node)
       }
     }
