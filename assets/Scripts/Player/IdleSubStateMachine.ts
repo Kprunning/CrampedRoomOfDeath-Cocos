@@ -1,8 +1,8 @@
-import {StateMachine} from '../../Base/StateMachine'
 import {DIRECTION_ENUM} from '../../Enums'
 import State from '../../Base/State'
 import {AnimationClip} from 'cc'
 import DirectionSubStateMachine from '../../Base/DirectionSubStateMachine'
+import StateMachine from '../../Base/StateMachine'
 
 
 const BASE_URL = '/texture/player/idle'

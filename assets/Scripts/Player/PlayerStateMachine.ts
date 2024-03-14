@@ -1,8 +1,8 @@
 import {_decorator, Animation} from 'cc'
 import {PARAMS_NAME_ENUM} from '../../Enums'
-import {getInitParamsNumber, getInitParamsTrigger, StateMachine} from '../../Base/StateMachine'
+import StateMachine, {getInitParamsNumber, getInitParamsTrigger} from '../../Base/StateMachine'
 import IdleSubStateMachine from './IdleSubStateMachine'
-import TurnLeftSubStateMachine from './TurnLeftSubStateMachine'
+import TurnSubStateMachine from './TurnSubStateMachine'
 
 const {ccclass, property} = _decorator
 
@@ -26,7 +26,8 @@ export class PlayerStateMachine extends StateMachine {
 
   private initStateMachines() {
     this.stateMachines.set(PARAMS_NAME_ENUM.IDLE, new IdleSubStateMachine(this))
-    this.stateMachines.set(PARAMS_NAME_ENUM.TURN_LEFT, new TurnLeftSubStateMachine(this))
+    this.stateMachines.set(PARAMS_NAME_ENUM.TURN_LEFT, new TurnSubStateMachine(this, 'left'))
+    this.stateMachines.set(PARAMS_NAME_ENUM.TURN_RIGHT, new TurnSubStateMachine(this, 'right'))
   }
 
   private initAnimationComponent() {

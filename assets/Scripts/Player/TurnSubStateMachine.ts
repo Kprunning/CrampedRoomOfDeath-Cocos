@@ -1,12 +1,12 @@
-import {StateMachine} from '../../Base/StateMachine'
 import {DIRECTION_ENUM} from '../../Enums'
 import State from '../../Base/State'
 import DirectionSubStateMachine from '../../Base/DirectionSubStateMachine'
+import StateMachine from 'db://assets/Base/StateMachine'
 
-const BASE_URL = '/texture/player/turnleft'
 
-export default class TurnLeftSubStateMachine extends DirectionSubStateMachine {
-  constructor(public fsm: StateMachine) {
+export default class TurnSubStateMachine extends DirectionSubStateMachine {
+  constructor(public fsm: StateMachine, turnDirection: string) {
+    const BASE_URL = `/texture/player/turn${turnDirection}`
     super(fsm)
     this.stateMachines.set(DIRECTION_ENUM.TOP, new State(fsm, `${BASE_URL}/top`))
     this.stateMachines.set(DIRECTION_ENUM.BOTTOM, new State(fsm, `${BASE_URL}/bottom`))

@@ -24,7 +24,7 @@ export function getInitParamsNumber() {
 
 
 @ccclass('StateMachine')
-export abstract class StateMachine extends Component {
+export default abstract class StateMachine extends Component {
   private _currentState: State | SubStateMachine = null
   params: Map<string, IParamsValue> = new Map<string, IParamsValue>()
   stateMachines: Map<string, State | SubStateMachine> = new Map<string, State | SubStateMachine>()
