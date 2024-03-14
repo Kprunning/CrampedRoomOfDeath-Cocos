@@ -21,6 +21,7 @@ export class PlayerStateMachine extends StateMachine {
   private initParams() {
     this.params.set(PARAMS_NAME_ENUM.IDLE, getInitParamsTrigger())
     this.params.set(PARAMS_NAME_ENUM.TURN_LEFT, getInitParamsTrigger())
+    this.params.set(PARAMS_NAME_ENUM.TURN_RIGHT, getInitParamsTrigger())
     this.params.set(PARAMS_NAME_ENUM.DIRECTION, getInitParamsNumber())
   }
 
@@ -43,9 +44,12 @@ export class PlayerStateMachine extends StateMachine {
   run() {
     switch (this.currentState) {
       case this.stateMachines.get(PARAMS_NAME_ENUM.TURN_LEFT):
+      case this.stateMachines.get(PARAMS_NAME_ENUM.TURN_RIGHT):
       case this.stateMachines.get(PARAMS_NAME_ENUM.IDLE):
         if (this.params.get(PARAMS_NAME_ENUM.TURN_LEFT).value) {
           this.currentState = this.stateMachines.get(PARAMS_NAME_ENUM.TURN_LEFT)
+        } else if (this.params.get(PARAMS_NAME_ENUM.TURN_RIGHT).value) {
+          this.currentState = this.stateMachines.get(PARAMS_NAME_ENUM.TURN_RIGHT)
         } else if (this.params.get(PARAMS_NAME_ENUM.IDLE).value) {
           this.currentState = this.stateMachines.get(PARAMS_NAME_ENUM.IDLE)
         } else {

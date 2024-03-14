@@ -50,6 +50,7 @@ export enum DIRECTION_ENUM {
 export enum ENTITY_STATE_ENUM {
   IDLE = 'IDLE',
   TURN_LEFT = 'TURN_LEFT',
+  TURN_RIGHT = 'TURN_RIGHT',
 }
 
 
