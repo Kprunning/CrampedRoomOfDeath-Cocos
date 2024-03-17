@@ -52,7 +52,7 @@ export default class EntityManager extends Component {
 
 
   protected update() {
-    this.node.setPosition(TILE_WIDTH * this.x + 1.5 * TILE_WIDTH, TILE_HEIGHT * this.y - 1.5 * TILE_HEIGHT)
+    this.node.setPosition(TILE_WIDTH * this.x + 0.5 * TILE_WIDTH, -TILE_HEIGHT * this.y - 0.5 * TILE_HEIGHT)
   }
 
 }

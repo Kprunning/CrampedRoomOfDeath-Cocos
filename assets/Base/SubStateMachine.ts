@@ -1,6 +1,6 @@
 import {FSM_PARAMS_TYPE_ENUM} from '../Enums'
 import State from './State'
-import {StateMachine} from './StateMachine'
+import StateMachine from './StateMachine'
 
 
 export default abstract class SubStateMachine {

@@ -33,7 +33,7 @@ export default class TileManager extends Component {
       if (cliffList.some(item => item === type)) {
         this.moveable = false
         this.turnable = true
-      } else if (type === 'CLIFF_RIGHT') {
+      } else if (type === 'FLOOR') {
         this.moveable = true
         this.turnable = true
       }

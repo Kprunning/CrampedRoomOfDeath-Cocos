@@ -20,12 +20,14 @@ export class PlayerManager extends EntityManager {
     this.fsm = this.addComponent(PlayerStateMachine)
     await this.fsm.init()
     super.init({
-      x: 0,
-      y: 0,
+      x: 2,
+      y: 8,
       type: ENTITY_TYPE_ENUM.PLAYER,
       direction: DIRECTION_ENUM.TOP,
       state: ENTITY_STATE_ENUM.IDLE
     })
+    this.targetX = this.x
+    this.targetY = this.y
     EventManager.Instance.on(EVENT_ENUM.CTRL_DIRECTION, this.inputHandle, this)
   }
 
@@ -41,10 +43,10 @@ export class PlayerManager extends EntityManager {
   move(ctrlDirection: CTRL_DIRECTION_ENUM) {
     switch (ctrlDirection) {
       case CTRL_DIRECTION_ENUM.BOTTOM:
-        this.targetY--
+        this.targetY++
         break
       case CTRL_DIRECTION_ENUM.TOP:
-        this.targetY++
+        this.targetY--
         break
       case CTRL_DIRECTION_ENUM.LEFT:
         this.targetX--
@@ -90,10 +92,8 @@ export class PlayerManager extends EntityManager {
       this.y -= this.speed
     }
     // 防止鬼畜乱动
-    if (Math.abs(this.x - this.targetX) <= 0.1) {
+    if (Math.abs(this.x - this.targetX) <= 0.1 && Math.abs(this.y - this.targetY) <= 0.1) {
       this.x = this.targetX
-    }
-    if (Math.abs(this.y - this.targetY) <= 0.1) {
       this.y = this.targetY
     }
   }
