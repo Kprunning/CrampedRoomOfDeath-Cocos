@@ -3,6 +3,7 @@ import {PlayerStateMachine} from '../Scripts/Player/PlayerStateMachine'
 import {DIRECTION_ENUM, DIRECTION_ORDER_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, PARAMS_NAME_ENUM} from '../Enums'
 import {TILE_HEIGHT, TILE_WIDTH} from '../Scripts/Tile/TileManager'
 import {IEntity} from '../Levels'
+import StateMachine from './StateMachine'
 
 const {ccclass, property} = _decorator
 
@@ -12,7 +13,7 @@ export default class EntityManager extends Component {
   x = 0
   y = 0
   type: ENTITY_TYPE_ENUM
-  fsm: PlayerStateMachine = null
+  fsm: StateMachine = null
 
   private _direction: DIRECTION_ENUM
   private _state: ENTITY_STATE_ENUM

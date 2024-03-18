@@ -221,7 +221,7 @@ export class PlayerManager extends EntityManager {
         weaponNextTile = tileInfo[x][y + 1]
         weaponTurnTile = tileInfo[x - 1][y + 1]
       }
-      return this.checkTurnTile(weaponNextTile, weaponTurnTile)
+      return this.checkTurnTile(weaponNextTile, weaponTurnTile, ENTITY_STATE_ENUM.BLOCK_TURN_LEFT)
     } else if (ctrlDirection === CTRL_DIRECTION_ENUM.TURN_RIGHT) {
       if (direction === DIRECTION_ENUM.TOP) {
         weaponNextTile = tileInfo[x + 1][y]
@@ -236,18 +236,34 @@ export class PlayerManager extends EntityManager {
         weaponNextTile = tileInfo[x][y - 1]
         weaponTurnTile = tileInfo[x - 1][y - 1]
       }
-      return this.checkTurnTile(weaponNextTile, weaponTurnTile)
+      return this.checkTurnTile(weaponNextTile, weaponTurnTile, ENTITY_STATE_ENUM.BLOCK_TURN_RIGHT)
     }
     return false
   }
 
   // 直线移动时的检测
   checkDirectTile(playerNextTile: TileManager, weaponNextTile: TileManager) {
-    return !(playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable))
+    if (!(playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable))) {
+      if (this.direction === DIRECTION_ENUM.BOTTOM) {
+        this.state = ENTITY_STATE_ENUM.BLOCK_BACK
+      } else if (this.direction === DIRECTION_ENUM.TOP) {
+        this.state = ENTITY_STATE_ENUM.BLOCK_FRONT
+      } else if (this.direction === DIRECTION_ENUM.LEFT) {
+        this.state = ENTITY_STATE_ENUM.BLOCK_LEFT
+      } else if (this.direction === DIRECTION_ENUM.RIGHT) {
+        this.state = ENTITY_STATE_ENUM.BLOCK_RIGHT
+      }
+      return true
+    }
+    return false
   }
 
-  private checkTurnTile(weaponNextTile: TileManager, weaponTurnTile: TileManager) {
-    return !((!weaponTurnTile || weaponTurnTile.turnable) && (!weaponNextTile || weaponNextTile.turnable))
+  private checkTurnTile(weaponNextTile: TileManager, weaponTurnTile: TileManager, blockType: ENTITY_STATE_ENUM.BLOCK_TURN_LEFT | ENTITY_STATE_ENUM.BLOCK_TURN_RIGHT) {
+    if (!((!weaponTurnTile || weaponTurnTile.turnable) && (!weaponNextTile || weaponNextTile.turnable))) {
+      this.state = blockType
+      return true
+    }
+    return false
   }
 }
 
