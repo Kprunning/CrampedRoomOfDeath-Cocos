@@ -137,7 +137,7 @@ export class PlayerManager extends EntityManager {
         return true
       }
       playerNextTile = tileInfo[x][playerNextY]
-      return this.checkDirectTile(playerNextTile, weaponNextTile)
+      return this.checkDirectTile(playerNextTile, weaponNextTile, ctrlDirection)
     } else if (ctrlDirection === CTRL_DIRECTION_ENUM.BOTTOM) {
       if (direction === DIRECTION_ENUM.TOP) {
         playerNextY = y + 1
@@ -160,7 +160,7 @@ export class PlayerManager extends EntityManager {
         return true
       }
       playerNextTile = tileInfo[x][playerNextY]
-      return this.checkDirectTile(playerNextTile, weaponNextTile)
+      return this.checkDirectTile(playerNextTile, weaponNextTile, ctrlDirection)
     } else if (ctrlDirection === CTRL_DIRECTION_ENUM.LEFT) {
       if (direction === DIRECTION_ENUM.TOP) {
         playerNextX = x - 1
@@ -183,7 +183,7 @@ export class PlayerManager extends EntityManager {
         return true
       }
       playerNextTile = tileInfo[playerNextX][y]
-      return this.checkDirectTile(playerNextTile, weaponNextTile)
+      return this.checkDirectTile(playerNextTile, weaponNextTile, ctrlDirection)
     } else if (ctrlDirection === CTRL_DIRECTION_ENUM.RIGHT) {
       if (direction === DIRECTION_ENUM.TOP) {
         playerNextX = x + 1
@@ -206,7 +206,7 @@ export class PlayerManager extends EntityManager {
         return true
       }
       playerNextTile = tileInfo[playerNextX][y]
-      return this.checkDirectTile(playerNextTile, weaponNextTile)
+      return this.checkDirectTile(playerNextTile, weaponNextTile, ctrlDirection)
     } else if (ctrlDirection === CTRL_DIRECTION_ENUM.TURN_LEFT) {
       if (direction === DIRECTION_ENUM.TOP) {
         weaponNextTile = tileInfo[x - 1][y]
@@ -242,15 +242,15 @@ export class PlayerManager extends EntityManager {
   }
 
   // 直线移动时的检测
-  checkDirectTile(playerNextTile: TileManager, weaponNextTile: TileManager) {
+  checkDirectTile(playerNextTile: TileManager, weaponNextTile: TileManager, ctrlDirection: CTRL_DIRECTION_ENUM) {
     if (!(playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable))) {
-      if (this.direction === DIRECTION_ENUM.BOTTOM) {
+      if (ctrlDirection === CTRL_DIRECTION_ENUM.BOTTOM) {
         this.state = ENTITY_STATE_ENUM.BLOCK_BACK
-      } else if (this.direction === DIRECTION_ENUM.TOP) {
+      } else if (ctrlDirection === CTRL_DIRECTION_ENUM.TOP) {
         this.state = ENTITY_STATE_ENUM.BLOCK_FRONT
-      } else if (this.direction === DIRECTION_ENUM.LEFT) {
+      } else if (ctrlDirection === CTRL_DIRECTION_ENUM.LEFT) {
         this.state = ENTITY_STATE_ENUM.BLOCK_LEFT
-      } else if (this.direction === DIRECTION_ENUM.RIGHT) {
+      } else if (ctrlDirection === CTRL_DIRECTION_ENUM.RIGHT) {
         this.state = ENTITY_STATE_ENUM.BLOCK_RIGHT
       }
       return true
