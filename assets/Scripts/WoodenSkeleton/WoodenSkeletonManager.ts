@@ -51,6 +51,11 @@ export default class WoodenSkeletonManager extends EntityManager {
       // 第四象限
       this.direction = disX > disY ? DIRECTION_ENUM.RIGHT : DIRECTION_ENUM.BOTTOM
     }
+
+    // 当玩家在敌人周围时,进行攻击
+    if (disX + disY <= 1) {
+      this.state = ENTITY_STATE_ENUM.ATTACK
+    }
   }
 }
 
