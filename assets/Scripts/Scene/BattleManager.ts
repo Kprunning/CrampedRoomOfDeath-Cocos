@@ -7,6 +7,7 @@ import DataManager from '../../Runtime/DataManager'
 import EventManager from '../../Runtime/EventManager'
 import {EVENT_ENUM} from '../../Enums'
 import {PlayerManager} from '../Player/PlayerManager'
+import WoodenSkeletonManager from '../WoodenSkeleton/WoodenSkeletonManager'
 
 const {ccclass, property} = _decorator
 
@@ -28,6 +29,7 @@ export class BattleManager extends Component {
     this.generateStage()
     this.initLevel()
     this.generatePlayer()
+    this.generateEnemies()
   }
 
   // 生成舞台
@@ -42,6 +44,14 @@ export class BattleManager extends Component {
     player.setParent(this.stage)
     const playerManager = player.addComponent(PlayerManager)
     playerManager.init()
+  }
+
+  // 生成敌人
+  private generateEnemies() {
+    const enemy = createUINode()
+    enemy.setParent(this.stage)
+    const woodenSkeletonManager = enemy.addComponent(WoodenSkeletonManager)
+    woodenSkeletonManager.init()
   }
 
   private initLevel() {
@@ -85,6 +95,8 @@ export class BattleManager extends Component {
     const posY = DataManager.Instance.mapColumnCount * TILE_HEIGHT / 2 + 80
     this.stage.setPosition(-posX, posY)
   }
+
+
 }
 
 
