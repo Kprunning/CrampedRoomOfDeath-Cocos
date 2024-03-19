@@ -1,6 +1,7 @@
 import {animation, AnimationClip, Sprite, SpriteFrame} from 'cc'
 import ResourceManager from '../Runtime/ResourceManager'
 import StateMachine from './StateMachine'
+import {sortSpriteFrames} from '../Utils'
 
 const ANIMATION_SPEED = 1 / 8
 
@@ -21,7 +22,7 @@ export default class State {
     const track = new animation.ObjectTrack()
     track.path = new animation.TrackPath().toComponent(Sprite).toProperty('spriteFrame') // 指定轨道路径，即指定目标对象为 "Foo" 子节点的 "position" 属性
     // 加载玩家动画资源
-    const frames: Array<[number, SpriteFrame]> = spriteFrames.map((spriteFrame, index) => [index * ANIMATION_SPEED, spriteFrame])
+    const frames: Array<[number, SpriteFrame]> = sortSpriteFrames(spriteFrames).map((spriteFrame, index) => [index * ANIMATION_SPEED, spriteFrame])
     track.channel.curve.assignSorted(frames)
 
     this.animationClip.addTrack(track)

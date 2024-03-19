@@ -39,19 +39,21 @@ export class BattleManager extends Component {
   }
 
   // 生成玩家
-  private generatePlayer() {
+  private async generatePlayer() {
     const player = createUINode()
     player.setParent(this.stage)
     const playerManager = player.addComponent(PlayerManager)
-    playerManager.init()
+    await playerManager.init()
+    DataManager.Instance.player = playerManager
   }
 
   // 生成敌人
-  private generateEnemies() {
+  private async generateEnemies() {
     const enemy = createUINode()
     enemy.setParent(this.stage)
     const woodenSkeletonManager = enemy.addComponent(WoodenSkeletonManager)
-    woodenSkeletonManager.init()
+    await woodenSkeletonManager.init()
+    DataManager.Instance.enemies.push(woodenSkeletonManager)
   }
 
   private initLevel() {

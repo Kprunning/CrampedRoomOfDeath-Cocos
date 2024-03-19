@@ -11,9 +11,10 @@ const {ccclass, property} = _decorator
 
 @ccclass('PlayerManager')
 export class PlayerManager extends EntityManager {
+  private readonly speed = 1 / 10
   targetX = 0
   targetY = 0
-  private readonly speed = 1 / 10
+  isMoving = false
 
 
   async init() {
@@ -28,10 +29,12 @@ export class PlayerManager extends EntityManager {
     })
     this.targetX = this.x
     this.targetY = this.y
+    EventManager.Instance.emit(EVENT_ENUM.PLAYER_BORN, true)
     EventManager.Instance.on(EVENT_ENUM.CTRL_DIRECTION, this.inputHandle, this)
   }
 
   protected onDestroy() {
+    super.onDestroy()
     EventManager.Instance.off(EVENT_ENUM.CTRL_DIRECTION, this.inputHandle)
   }
 
@@ -44,15 +47,19 @@ export class PlayerManager extends EntityManager {
     switch (ctrlDirection) {
       case CTRL_DIRECTION_ENUM.BOTTOM:
         this.targetY++
+        this.isMoving = true
         break
       case CTRL_DIRECTION_ENUM.TOP:
         this.targetY--
+        this.isMoving = true
         break
       case CTRL_DIRECTION_ENUM.LEFT:
         this.targetX--
+        this.isMoving = true
         break
       case CTRL_DIRECTION_ENUM.RIGHT:
         this.targetX++
+        this.isMoving = true
         break
       case CTRL_DIRECTION_ENUM.TURN_LEFT:
         if (this.direction === DIRECTION_ENUM.TOP) {
@@ -92,13 +99,19 @@ export class PlayerManager extends EntityManager {
       this.y -= this.speed
     }
     // 防止鬼畜乱动
-    if (Math.abs(this.x - this.targetX) <= 0.1 && Math.abs(this.y - this.targetY) <= 0.1) {
+    if (Math.abs(this.x - this.targetX) <= 0.1 && Math.abs(this.y - this.targetY) <= 0.1 && this.isMoving) {
+      this.isMoving = false
       this.x = this.targetX
       this.y = this.targetY
+      EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END)
     }
   }
 
   private inputHandle(ctrlDirection: CTRL_DIRECTION_ENUM) {
+    if (this.isMoving) {
+      return
+    }
+
     if (this.willBlock(ctrlDirection)) {
       return
     }
