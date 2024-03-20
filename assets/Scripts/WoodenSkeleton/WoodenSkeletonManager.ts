@@ -30,7 +30,11 @@ export default class WoodenSkeletonManager extends EntityManager {
   }
 
   private focusPlayerMove(playerBorn: boolean = false) {
-    const {x: playerX, y: playerY} = DataManager.Instance.player
+    const player = DataManager.Instance.player
+    if (!player) {
+      return
+    }
+    const {x: playerX, y: playerY} = player
     const disX = Math.abs(this.x - playerX)
     const disY = Math.abs(this.y - playerY)
 

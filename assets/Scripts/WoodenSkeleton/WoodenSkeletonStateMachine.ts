@@ -1,6 +1,6 @@
 import {_decorator, Animation} from 'cc'
 import {PARAMS_NAME_ENUM} from '../../Enums'
-import StateMachine, {getInitParamsTrigger} from '../../Base/StateMachine'
+import StateMachine, {getInitParamsNumber, getInitParamsTrigger} from '../../Base/StateMachine'
 import IdleSubStateMachine from './IdleSubStateMachine'
 import AttackSubStateMachine from './AttackSubStateMachine'
 
@@ -19,6 +19,7 @@ export default class WoodenSkeletonStateMachine extends StateMachine {
 
   private initParams() {
     this.params.set(PARAMS_NAME_ENUM.IDLE, getInitParamsTrigger())
+    this.params.set(PARAMS_NAME_ENUM.DIRECTION, getInitParamsNumber())
     this.params.set(PARAMS_NAME_ENUM.ATTACK, getInitParamsTrigger())
   }
 
@@ -41,6 +42,7 @@ export default class WoodenSkeletonStateMachine extends StateMachine {
         break
       default:
         this.currentState = this.stateMachines.get(PARAMS_NAME_ENUM.IDLE)
+
     }
   }
 }

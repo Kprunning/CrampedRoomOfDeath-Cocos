@@ -29,7 +29,6 @@ export class PlayerManager extends EntityManager {
     })
     this.targetX = this.x
     this.targetY = this.y
-    EventManager.Instance.emit(EVENT_ENUM.PLAYER_BORN, true)
     EventManager.Instance.on(EVENT_ENUM.CTRL_DIRECTION, this.inputHandle, this)
   }
 

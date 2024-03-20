@@ -15,7 +15,7 @@ export function randomByRange(start: number, end: number) {
   return Math.floor(start + (end - start) * Math.random())
 }
 
-const reg = /\((\d*)\)/
+const reg = /\((\d+)\)/
 
 function getSpriteFrameNum(name: string) {
   return parseInt(name.match(reg)[1] || '0')
