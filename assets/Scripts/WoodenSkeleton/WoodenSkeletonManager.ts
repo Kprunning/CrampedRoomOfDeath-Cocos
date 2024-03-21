@@ -15,14 +15,19 @@ export default class WoodenSkeletonManager extends EntityManager {
     this.fsm = this.addComponent(WoodenSkeletonStateMachine)
     await this.fsm.init()
     super.init({
-      x: 7,
-      y: 7,
+      x: 2,
+      y: 4,
       type: ENTITY_TYPE_ENUM.ENEMY,
       direction: DIRECTION_ENUM.TOP,
       state: ENTITY_STATE_ENUM.IDLE
     })
+
     EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END, this.focusPlayerMove, this)
+    EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END, this.onAttack, this)
     EventManager.Instance.on(EVENT_ENUM.PLAYER_BORN, this.focusPlayerMove, this)
+
+    // 保证初始情况面向玩家
+    this.focusPlayerMove(true)
   }
 
   protected onDestroy() {
@@ -55,9 +60,16 @@ export default class WoodenSkeletonManager extends EntityManager {
       // 第四象限
       this.direction = disX > disY ? DIRECTION_ENUM.RIGHT : DIRECTION_ENUM.BOTTOM
     }
+
+  }
+
+  private onAttack() {
+    const {x: playerX, y: playerY} = DataManager.Instance.player
     // 当玩家在敌人周围时,进行攻击
-    if (disX + disY <= 1) {
+    if ((this.x === playerX && Math.abs(playerY - this.y) <= 1) || (this.y === playerY && Math.abs(playerX - this.x) <= 1)) {
       this.state = ENTITY_STATE_ENUM.ATTACK
+    } else {
+      this.state = ENTITY_STATE_ENUM.IDLE
     }
   }
 }
