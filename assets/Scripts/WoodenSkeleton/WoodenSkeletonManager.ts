@@ -48,14 +48,13 @@ export default class WoodenSkeletonManager extends EntityManager {
     } else if (this.x >= playerX && this.y >= playerY) {
       // 第二象限
       this.direction = disX > disY ? DIRECTION_ENUM.LEFT : DIRECTION_ENUM.TOP
-    } else if (this.x >= playerX && this.y >= playerY) {
+    } else if (this.x >= playerX && this.y <= playerY) {
       // 第三象限
       this.direction = disX > disY ? DIRECTION_ENUM.LEFT : DIRECTION_ENUM.BOTTOM
     } else if (this.x <= playerX && this.y <= playerY) {
       // 第四象限
       this.direction = disX > disY ? DIRECTION_ENUM.RIGHT : DIRECTION_ENUM.BOTTOM
     }
-
     // 当玩家在敌人周围时,进行攻击
     if (disX + disY <= 1) {
       this.state = ENTITY_STATE_ENUM.ATTACK

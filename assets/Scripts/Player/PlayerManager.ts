@@ -70,6 +70,7 @@ export class PlayerManager extends EntityManager {
         } else if (this.direction === DIRECTION_ENUM.RIGHT) {
           this.direction = DIRECTION_ENUM.TOP
         }
+        EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END)
         this.state = ENTITY_STATE_ENUM.TURN_LEFT
         break
       case CTRL_DIRECTION_ENUM.TURN_RIGHT:
@@ -82,6 +83,7 @@ export class PlayerManager extends EntityManager {
         } else if (this.direction === DIRECTION_ENUM.RIGHT) {
           this.direction = DIRECTION_ENUM.BOTTOM
         }
+        EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END)
         this.state = ENTITY_STATE_ENUM.TURN_RIGHT
         break
     }

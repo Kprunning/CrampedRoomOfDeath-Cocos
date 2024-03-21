@@ -82,14 +82,13 @@ export class BattleManager extends Component {
     DataManager.Instance.reset()
   }
 
-  private generateTileMap() {
+  private async generateTileMap() {
     // 生成地图
     const tileMap = createUINode()
     tileMap.setParent(this.stage)
     const tileMapManager = tileMap.addComponent(TileMapManager)
-    tileMapManager.init().then(() => {
-      this.adaptMapPosition()
-    })
+    await tileMapManager.init()
+    this.adaptMapPosition()
   }
 
   // 调整地图位置,使地图居中
