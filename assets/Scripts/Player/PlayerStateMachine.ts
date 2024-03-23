@@ -5,6 +5,7 @@ import IdleSubStateMachine from './IdleSubStateMachine'
 import TurnSubStateMachine from './TurnSubStateMachine'
 import BlockSubStateMachine from './BlockSubStateMachine'
 import EntityManager from '../../Base/EntityManager'
+import DeathSubStateMachine from './DeathSubStateMachine'
 
 const {ccclass, property} = _decorator
 
@@ -31,6 +32,7 @@ export class PlayerStateMachine extends StateMachine {
     this.params.set(PARAMS_NAME_ENUM.BLOCK_BACK, getInitParamsTrigger())
     this.params.set(PARAMS_NAME_ENUM.BLOCK_TURN_RIGHT, getInitParamsTrigger())
     this.params.set(PARAMS_NAME_ENUM.BLOCK_TURN_LEFT, getInitParamsTrigger())
+    this.params.set(PARAMS_NAME_ENUM.DEATH, getInitParamsTrigger())
   }
 
   private initStateMachines() {
@@ -43,6 +45,7 @@ export class PlayerStateMachine extends StateMachine {
     this.stateMachines.set(PARAMS_NAME_ENUM.BLOCK_BACK, new BlockSubStateMachine(this, 'back'))
     this.stateMachines.set(PARAMS_NAME_ENUM.BLOCK_TURN_RIGHT, new BlockSubStateMachine(this, 'turnright'))
     this.stateMachines.set(PARAMS_NAME_ENUM.BLOCK_TURN_LEFT, new BlockSubStateMachine(this, 'turnleft'))
+    this.stateMachines.set(PARAMS_NAME_ENUM.DEATH, new DeathSubStateMachine(this))
   }
 
   private initAnimationComponent() {
@@ -66,6 +69,7 @@ export class PlayerStateMachine extends StateMachine {
       case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCK_FRONT):
       case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCK_LEFT):
       case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCK_RIGHT):
+      case this.stateMachines.get(PARAMS_NAME_ENUM.DEATH):
         if (this.params.get(PARAMS_NAME_ENUM.BLOCK_TURN_LEFT).value) {
           this.currentState = this.stateMachines.get(PARAMS_NAME_ENUM.BLOCK_TURN_LEFT)
         } else if (this.params.get(PARAMS_NAME_ENUM.BLOCK_TURN_RIGHT).value) {
@@ -82,6 +86,8 @@ export class PlayerStateMachine extends StateMachine {
           this.currentState = this.stateMachines.get(PARAMS_NAME_ENUM.TURN_LEFT)
         } else if (this.params.get(PARAMS_NAME_ENUM.TURN_RIGHT).value) {
           this.currentState = this.stateMachines.get(PARAMS_NAME_ENUM.TURN_RIGHT)
+        } else if (this.params.get(PARAMS_NAME_ENUM.DEATH).value) {
+          this.currentState = this.stateMachines.get(PARAMS_NAME_ENUM.DEATH)
         } else if (this.params.get(PARAMS_NAME_ENUM.IDLE).value) {
           this.currentState = this.stateMachines.get(PARAMS_NAME_ENUM.IDLE)
         } else {

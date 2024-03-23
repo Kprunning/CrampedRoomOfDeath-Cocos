@@ -30,6 +30,7 @@ export class PlayerManager extends EntityManager {
     this.targetX = this.x
     this.targetY = this.y
     EventManager.Instance.on(EVENT_ENUM.CTRL_DIRECTION, this.inputHandle, this)
+    EventManager.Instance.on(EVENT_ENUM.PLAYER_DEATH, this.onDead, this)
   }
 
   protected onDestroy() {
@@ -109,6 +110,10 @@ export class PlayerManager extends EntityManager {
   }
 
   private inputHandle(ctrlDirection: CTRL_DIRECTION_ENUM) {
+    if (this.state === ENTITY_STATE_ENUM.DEATH || this.state === ENTITY_STATE_ENUM.AIR_DEATH) {
+      return
+    }
+
     if (this.isMoving) {
       return
     }
@@ -278,6 +283,10 @@ export class PlayerManager extends EntityManager {
       return true
     }
     return false
+  }
+
+  private onDead(type: ENTITY_STATE_ENUM) {
+    this.state = type
   }
 }
 
