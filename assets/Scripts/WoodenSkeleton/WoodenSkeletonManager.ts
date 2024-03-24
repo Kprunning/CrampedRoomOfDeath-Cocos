@@ -25,16 +25,24 @@ export default class WoodenSkeletonManager extends EntityManager {
     EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END, this.focusPlayerMove, this)
     EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END, this.onAttack, this)
     EventManager.Instance.on(EVENT_ENUM.PLAYER_BORN, this.focusPlayerMove, this)
+    EventManager.Instance.on(EVENT_ENUM.ATTACK_ENEMY, this.onDead, this)
 
     // 保证初始情况面向玩家
     this.focusPlayerMove(true)
   }
 
-  protected onDestroy() {
+  onDestroy() {
+    super.onDestroy()
     EventManager.Instance.off(EVENT_ENUM.PLAYER_MOVE_END, this.focusPlayerMove)
+    EventManager.Instance.off(EVENT_ENUM.PLAYER_MOVE_END, this.onAttack)
+    EventManager.Instance.off(EVENT_ENUM.PLAYER_BORN, this.focusPlayerMove)
+    EventManager.Instance.off(EVENT_ENUM.ATTACK_ENEMY, this.onDead)
   }
 
   private focusPlayerMove(playerBorn: boolean = false) {
+    if (this.state === ENTITY_STATE_ENUM.DEATH) {
+      return
+    }
     const player = DataManager.Instance.player
     if (!player) {
       return
@@ -64,14 +72,27 @@ export default class WoodenSkeletonManager extends EntityManager {
   }
 
   private onAttack() {
+    if (this.state === ENTITY_STATE_ENUM.DEATH) {
+      return
+    }
     const {x: playerX, y: playerY, state: playerState} = DataManager.Instance.player
     // 当玩家在敌人周围时,进行攻击
     if (((this.x === playerX && Math.abs(playerY - this.y) <= 1) || (this.y === playerY && Math.abs(playerX - this.x) <= 1))
       && (playerState !== ENTITY_STATE_ENUM.DEATH && playerState !== ENTITY_STATE_ENUM.AIR_DEATH)) {
       this.state = ENTITY_STATE_ENUM.ATTACK
-      EventManager.Instance.emit(EVENT_ENUM.PLAYER_DEATH, ENTITY_STATE_ENUM.DEATH)
+      EventManager.Instance.emit(EVENT_ENUM.ATTACK_PLAYER, ENTITY_STATE_ENUM.DEATH)
     } else {
       this.state = ENTITY_STATE_ENUM.IDLE
+    }
+  }
+
+  private onDead(id: string) {
+    if (this.state === ENTITY_STATE_ENUM.DEATH) {
+      return
+    }
+
+    if (id === this.id) {
+      this.state = ENTITY_STATE_ENUM.DEATH
     }
   }
 }

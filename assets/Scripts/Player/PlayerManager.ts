@@ -30,12 +30,13 @@ export class PlayerManager extends EntityManager {
     this.targetX = this.x
     this.targetY = this.y
     EventManager.Instance.on(EVENT_ENUM.CTRL_DIRECTION, this.inputHandle, this)
-    EventManager.Instance.on(EVENT_ENUM.PLAYER_DEATH, this.onDead, this)
+    EventManager.Instance.on(EVENT_ENUM.ATTACK_PLAYER, this.onDead, this)
   }
 
   protected onDestroy() {
     super.onDestroy()
     EventManager.Instance.off(EVENT_ENUM.CTRL_DIRECTION, this.inputHandle)
+    EventManager.Instance.off(EVENT_ENUM.ATTACK_PLAYER, this.onDead)
   }
 
   update() {
@@ -115,6 +116,12 @@ export class PlayerManager extends EntityManager {
     }
 
     if (this.isMoving) {
+      return
+    }
+
+    const id = this.willAttack(ctrlDirection)
+    if (id) {
+      EventManager.Instance.emit(EVENT_ENUM.ATTACK_ENEMY, id)
       return
     }
 
@@ -287,6 +294,34 @@ export class PlayerManager extends EntityManager {
 
   private onDead(type: ENTITY_STATE_ENUM) {
     this.state = type
+  }
+
+  private willAttack(ctrlDirection: CTRL_DIRECTION_ENUM) {
+    const enemies = DataManager.Instance.enemies.filter(item => item.state !== ENTITY_STATE_ENUM.DEATH)
+    for (let i = 0; i < enemies.length; i++) {
+      let enemy = enemies[i]
+      const {x: enemyX, y: enemyY, id: enemyId} = enemy
+      let attackX = 0
+      let attackY = 0
+      if (ctrlDirection === CTRL_DIRECTION_ENUM.TOP && this.direction === DIRECTION_ENUM.TOP) {
+        attackX = this.x
+        attackY = this.y - 2
+      } else if (ctrlDirection === CTRL_DIRECTION_ENUM.BOTTOM && this.direction === DIRECTION_ENUM.BOTTOM) {
+        attackX = this.x
+        attackY = this.y + 2
+      } else if (ctrlDirection === CTRL_DIRECTION_ENUM.LEFT && this.direction === DIRECTION_ENUM.LEFT) {
+        attackX = this.x - 2
+        attackY = this.y
+      } else if (ctrlDirection === CTRL_DIRECTION_ENUM.RIGHT && this.direction === DIRECTION_ENUM.RIGHT) {
+        attackX = this.x + 2
+        attackY = this.y
+      }
+      if (enemyX === attackX && enemyY === attackY) {
+        this.state = ENTITY_STATE_ENUM.ATTACK
+        return enemyId
+      }
+    }
+    return ''
   }
 }
 

@@ -32,6 +32,10 @@ export default class State {
   }
 
   async run() {
+    // 如果动画没有变化,直接返回,避免动画抖动的现象
+    if (this.fsm.animationComponent?.defaultClip?.name === this.animationClip.name) {
+      return
+    }
     this.fsm.animationComponent.defaultClip = this.animationClip
     this.fsm.animationComponent.play()
   }
