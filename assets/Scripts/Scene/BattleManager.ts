@@ -5,9 +5,11 @@ import levels, {ILevel} from '../../Levels'
 import {TILE_HEIGHT, TILE_WIDTH} from '../Tile/TileManager'
 import DataManager from '../../Runtime/DataManager'
 import EventManager from '../../Runtime/EventManager'
-import {EVENT_ENUM} from '../../Enums'
+import {DIRECTION_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM} from '../../Enums'
 import {PlayerManager} from '../Player/PlayerManager'
 import WoodenSkeletonManager from '../WoodenSkeleton/WoodenSkeletonManager'
+import IronSkeletonManager from '../IronSkeleton/IronSkeletonManager'
+import {DoorManager} from '../Door/DoorManager'
 
 const {ccclass, property} = _decorator
 
@@ -30,6 +32,7 @@ export class BattleManager extends Component {
     this.initLevel()
     this.generatePlayer()
     this.generateEnemies()
+    this.generateDoor()
   }
 
   // 生成舞台
@@ -43,18 +46,57 @@ export class BattleManager extends Component {
     const player = createUINode()
     player.setParent(this.stage)
     const playerManager = player.addComponent(PlayerManager)
-    await playerManager.init()
+    await playerManager.init({
+      x: 2,
+      y: 8,
+      type: ENTITY_TYPE_ENUM.PLAYER,
+      direction: DIRECTION_ENUM.TOP,
+      state: ENTITY_STATE_ENUM.IDLE
+    })
     DataManager.Instance.player = playerManager
     EventManager.Instance.emit(EVENT_ENUM.PLAYER_BORN, true)
   }
 
   // 生成敌人
   private async generateEnemies() {
-    const enemy = createUINode()
-    enemy.setParent(this.stage)
-    const woodenSkeletonManager = enemy.addComponent(WoodenSkeletonManager)
-    await woodenSkeletonManager.init()
+    const enemy1 = createUINode()
+    enemy1.setParent(this.stage)
+    const woodenSkeletonManager = enemy1.addComponent(WoodenSkeletonManager)
+    await woodenSkeletonManager.init({
+      x: 2,
+      y: 4,
+      type: ENTITY_TYPE_ENUM.SKELETON_WOODEN,
+      direction: DIRECTION_ENUM.TOP,
+      state: ENTITY_STATE_ENUM.IDLE
+    })
     DataManager.Instance.enemies.push(woodenSkeletonManager)
+
+    const enemy2 = createUINode()
+    enemy2.setParent(this.stage)
+    const ironSkeletonManager = enemy2.addComponent(IronSkeletonManager)
+    await ironSkeletonManager.init({
+      x: 7,
+      y: 4,
+      type: ENTITY_TYPE_ENUM.SKELETON_IRON,
+      direction: DIRECTION_ENUM.TOP,
+      state: ENTITY_STATE_ENUM.IDLE
+    })
+    DataManager.Instance.enemies.push(ironSkeletonManager)
+  }
+
+  // 生成玩家
+  private async generateDoor() {
+    const door = createUINode()
+    door.setParent(this.stage)
+    const doorManager = door.addComponent(DoorManager)
+    await doorManager.init({
+      x: 2,
+      y: 8,
+      type: ENTITY_TYPE_ENUM.DOOR,
+      direction: DIRECTION_ENUM.TOP,
+      state: ENTITY_STATE_ENUM.IDLE
+    })
+    DataManager.Instance.door = doorManager
   }
 
   private initLevel() {

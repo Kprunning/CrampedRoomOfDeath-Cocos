@@ -11,6 +11,8 @@ export const TILE_HEIGHT = 55
 export default class TileManager extends Component {
   moveable: boolean
   turnable: boolean
+  x: number
+  y: number
 
   init(type: TILE_TYPE_ENUM, spriteFrame: SpriteFrame, i: number, j: number) {
     const spriteComponent = this.addComponent(Sprite)
