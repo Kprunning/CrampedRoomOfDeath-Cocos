@@ -117,6 +117,7 @@ export class PlayerManager extends EntityManager {
     const id = this.willAttack(ctrlDirection)
     if (id) {
       EventManager.Instance.emit(EVENT_ENUM.ATTACK_ENEMY, id)
+      EventManager.Instance.emit(EVENT_ENUM.DOOR_OPEN)
       return
     }
 
@@ -154,7 +155,7 @@ export class PlayerManager extends EntityManager {
         weaponNextX = x - 1
         weaponNextY = y - 1
       }
-      if (playerNextY < 0) {
+      if (weaponNextY < 0 || playerNextY < 0) {
         return true
       }
       playerNextTile = tileInfo[x][playerNextY]
@@ -182,7 +183,7 @@ export class PlayerManager extends EntityManager {
         weaponNextX = x - 1
         weaponNextY = y + 1
       }
-      if (playerNextY > tileInfo[x].length - 1) {
+      if (playerNextY > tileInfo[x].length - 1 || weaponNextY > tileInfo[x].length - 1) {
         return true
       }
       playerNextTile = tileInfo[x][playerNextY]
@@ -210,7 +211,7 @@ export class PlayerManager extends EntityManager {
         weaponNextX = x - 2
         weaponNextY = y
       }
-      if (playerNextX < 0) {
+      if (playerNextX < 0 || weaponNextX < 0) {
         return true
       }
       playerNextTile = tileInfo[playerNextX][y]
@@ -238,7 +239,7 @@ export class PlayerManager extends EntityManager {
         weaponNextX = x
         weaponNextY = y
       }
-      if (playerNextX > tileInfo.length - 1) {
+      if (playerNextX > tileInfo.length - 1 || weaponNextX > tileInfo.length - 1) {
         return true
       }
       playerNextTile = tileInfo[playerNextX][y]
@@ -316,10 +317,7 @@ export class PlayerManager extends EntityManager {
 
   // 直线移动时的检测
   checkDirectTile(playerNextTile: TileManager, weaponNextTile: TileManager, ctrlDirection: CTRL_DIRECTION_ENUM) {
-    if (!(
-      playerNextTile && playerNextTile.moveable &&
-      (!weaponNextTile || weaponNextTile.turnable)
-    )) {
+    if (!(playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable))) {
       if (ctrlDirection === CTRL_DIRECTION_ENUM.BOTTOM) {
         this.state = ENTITY_STATE_ENUM.BLOCK_BACK
       } else if (ctrlDirection === CTRL_DIRECTION_ENUM.TOP) {
@@ -331,10 +329,61 @@ export class PlayerManager extends EntityManager {
       }
       return true
     }
+    const {x: doorX, y: doorY, state: doorState} = DataManager.Instance.door
+    // 检测是否和门产生碰撞
+    if (doorState !== ENTITY_STATE_ENUM.DEATH &&
+      ((playerNextTile.x === doorX && playerNextTile.y === doorY) || (weaponNextTile.x === doorX && weaponNextTile.y === doorY))) {
+      if (ctrlDirection === CTRL_DIRECTION_ENUM.BOTTOM) {
+        this.state = ENTITY_STATE_ENUM.BLOCK_BACK
+      } else if (ctrlDirection === CTRL_DIRECTION_ENUM.TOP) {
+        this.state = ENTITY_STATE_ENUM.BLOCK_FRONT
+      } else if (ctrlDirection === CTRL_DIRECTION_ENUM.LEFT) {
+        this.state = ENTITY_STATE_ENUM.BLOCK_LEFT
+      } else if (ctrlDirection === CTRL_DIRECTION_ENUM.RIGHT) {
+        this.state = ENTITY_STATE_ENUM.BLOCK_RIGHT
+      }
+      return true
+    }
+    // 检测和敌人碰撞
+    const enemies = DataManager.Instance.enemies.filter(enemy => enemy.state !== ENTITY_STATE_ENUM.DEATH)
+    for (let i = 0; i < enemies.length; i++) {
+      const enemy = enemies[i]
+      const {x: enemyX, y: enemyY} = enemy
+      if ((playerNextTile.x === enemyX && playerNextTile.y === enemyY) || (weaponNextTile.x === enemyX && weaponNextTile.y === enemyY)) {
+        if (ctrlDirection === CTRL_DIRECTION_ENUM.BOTTOM) {
+          this.state = ENTITY_STATE_ENUM.BLOCK_BACK
+        } else if (ctrlDirection === CTRL_DIRECTION_ENUM.TOP) {
+          this.state = ENTITY_STATE_ENUM.BLOCK_FRONT
+        } else if (ctrlDirection === CTRL_DIRECTION_ENUM.LEFT) {
+          this.state = ENTITY_STATE_ENUM.BLOCK_LEFT
+        } else if (ctrlDirection === CTRL_DIRECTION_ENUM.RIGHT) {
+          this.state = ENTITY_STATE_ENUM.BLOCK_RIGHT
+        }
+        return true
+      }
+    }
+
     return false
   }
 
   private checkTurnTile(weaponNextTile: TileManager, weaponTurnTile: TileManager, blockType: ENTITY_STATE_ENUM.BLOCK_TURN_LEFT | ENTITY_STATE_ENUM.BLOCK_TURN_RIGHT) {
+    // 检测是否和门产生碰撞
+    const {x: doorX, y: doorY, state: doorState} = DataManager.Instance.door
+    if (doorState !== ENTITY_STATE_ENUM.DEATH &&
+      ((weaponNextTile.x === doorX && weaponNextTile.y === doorY) || (weaponTurnTile.x === doorX && weaponTurnTile.y === doorY))) {
+      this.state = blockType
+      return true
+    }
+    // 检测和敌人碰撞
+    const enemies = DataManager.Instance.enemies.filter(enemy => enemy.state !== ENTITY_STATE_ENUM.DEATH)
+    for (let i = 0; i < enemies.length; i++) {
+      const enemy = enemies[i]
+      const {x: enemyX, y: enemyY} = enemy
+      if ((weaponNextTile.x === enemyX && weaponNextTile.y === enemyY) || (weaponTurnTile.x === enemyX && weaponTurnTile.y === enemyY)) {
+        this.state = blockType
+        return true
+      }
+    }
     if (!((!weaponTurnTile || weaponTurnTile.turnable) && (!weaponNextTile || weaponNextTile.turnable))) {
       this.state = blockType
       return true
@@ -368,10 +417,6 @@ export class PlayerManager extends EntityManager {
       }
       if (enemyX === attackX && enemyY === attackY) {
         this.state = ENTITY_STATE_ENUM.ATTACK
-        // 说明击败的是最后一名敌人
-        if (enemies.length === 1) {
-          EventManager.Instance.emit(EVENT_ENUM.DOOR_OPEN)
-        }
         return enemyId
       }
     }
