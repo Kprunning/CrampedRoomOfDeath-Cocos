@@ -67,8 +67,8 @@ export class PlayerManager extends EntityManager {
         } else if (this.direction === DIRECTION_ENUM.RIGHT) {
           this.direction = DIRECTION_ENUM.TOP
         }
-        EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END)
         this.state = ENTITY_STATE_ENUM.TURN_LEFT
+        EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END)
         break
       case CTRL_DIRECTION_ENUM.TURN_RIGHT:
         if (this.direction === DIRECTION_ENUM.TOP) {
@@ -80,8 +80,8 @@ export class PlayerManager extends EntityManager {
         } else if (this.direction === DIRECTION_ENUM.RIGHT) {
           this.direction = DIRECTION_ENUM.BOTTOM
         }
-        EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END)
         this.state = ENTITY_STATE_ENUM.TURN_RIGHT
+        EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END)
         break
     }
   }
@@ -317,6 +317,15 @@ export class PlayerManager extends EntityManager {
 
   // 直线移动时的检测
   checkDirectTile(playerNextTile: TileManager, weaponNextTile: TileManager, ctrlDirection: CTRL_DIRECTION_ENUM) {
+    // 检测是否经过地裂
+    const bursts = DataManager.Instance.busts.filter(burst => burst.state !== ENTITY_STATE_ENUM.DEATH)
+    for (let i = 0; i < bursts.length; i++) {
+      const {x: burstX, y: burstY} = bursts[i]
+      if ((playerNextTile.x === burstX && playerNextTile.y === burstY) && (!weaponNextTile || weaponNextTile.turnable)) {
+        return false
+      }
+    }
+
     if (!(playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable))) {
       if (ctrlDirection === CTRL_DIRECTION_ENUM.BOTTOM) {
         this.state = ENTITY_STATE_ENUM.BLOCK_BACK
@@ -384,6 +393,7 @@ export class PlayerManager extends EntityManager {
         return true
       }
     }
+
     if (!((!weaponTurnTile || weaponTurnTile.turnable) && (!weaponNextTile || weaponNextTile.turnable))) {
       this.state = blockType
       return true

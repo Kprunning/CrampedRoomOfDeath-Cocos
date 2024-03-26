@@ -26,7 +26,7 @@ export default class WoodenSkeletonManager extends EnemyManager {
 
 
   private onAttack() {
-    if (this.state === ENTITY_STATE_ENUM.DEATH) {
+    if (this.state === ENTITY_STATE_ENUM.DEATH || !DataManager.Instance.player) {
       return
     }
     const {x: playerX, y: playerY, state: playerState} = DataManager.Instance.player

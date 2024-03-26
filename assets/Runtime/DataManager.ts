@@ -4,6 +4,7 @@ import TileManager from '../Scripts/Tile/TileManager'
 import {PlayerManager} from '../Scripts/Player/PlayerManager'
 import EnemyManager from '../Base/EnemyManager'
 import {DoorManager} from '../Scripts/Door/DoorManager'
+import BurstManager from '../Scripts/Burst/BurstManager'
 
 export default class DataManager extends Singleton {
   mapInfo: Array<Array<ITiler>>
@@ -14,6 +15,7 @@ export default class DataManager extends Singleton {
   player: PlayerManager
   enemies: EnemyManager[]
   door: DoorManager
+  busts: BurstManager[]
 
   static get Instance(): DataManager {
     return super.GetInstance<DataManager>()
@@ -27,5 +29,6 @@ export default class DataManager extends Singleton {
     this.player = null
     this.door = null
     this.enemies = []
+    this.busts = []
   }
 }

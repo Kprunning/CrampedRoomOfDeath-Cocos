@@ -10,6 +10,7 @@ import {PlayerManager} from '../Player/PlayerManager'
 import WoodenSkeletonManager from '../WoodenSkeleton/WoodenSkeletonManager'
 import IronSkeletonManager from '../IronSkeleton/IronSkeletonManager'
 import {DoorManager} from '../Door/DoorManager'
+import BurstManager from '../Burst/BurstManager'
 
 const {ccclass, property} = _decorator
 
@@ -33,6 +34,7 @@ export class BattleManager extends Component {
     this.generatePlayer()
     this.generateEnemies()
     this.generateDoor()
+    this.generateBurst()
   }
 
   // 生成舞台
@@ -84,7 +86,7 @@ export class BattleManager extends Component {
     DataManager.Instance.enemies.push(ironSkeletonManager)
   }
 
-  // 生成玩家
+  // 生成门
   private async generateDoor() {
     const door = createUINode()
     door.setParent(this.stage)
@@ -97,6 +99,21 @@ export class BattleManager extends Component {
       state: ENTITY_STATE_ENUM.IDLE
     })
     DataManager.Instance.door = doorManager
+  }
+
+  // 生成地裂
+  private async generateBurst() {
+    const burst = createUINode()
+    burst.setParent(this.stage)
+    const burstManager = burst.addComponent(BurstManager)
+    await burstManager.init({
+      x: 2,
+      y: 6,
+      type: ENTITY_TYPE_ENUM.BURST,
+      direction: DIRECTION_ENUM.TOP,
+      state: ENTITY_STATE_ENUM.IDLE
+    })
+    DataManager.Instance.busts.push(burstManager)
   }
 
   private initLevel() {
