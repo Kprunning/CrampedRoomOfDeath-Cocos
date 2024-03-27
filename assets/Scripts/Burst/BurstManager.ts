@@ -27,9 +27,9 @@ export default class BurstManager extends EnemyManager {
     EventManager.Instance.off(EVENT_ENUM.PLAYER_MOVE_END, this.onBurst)
   }
 
-  protected update() {
-    this.node.setPosition(TILE_WIDTH * this.x, -TILE_HEIGHT * this.y)
-  }
+  // protected update() {
+  //   this.node.setPosition(TILE_WIDTH * this.x, -TILE_HEIGHT * this.y)
+  // }
 
 
   private onBurst() {

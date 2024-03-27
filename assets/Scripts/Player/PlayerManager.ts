@@ -134,214 +134,179 @@ export class PlayerManager extends EntityManager {
     let playerNextY: number
     let weaponNextX: number
     let weaponNextY: number
-    let playerNextTile: TileManager
-    let weaponNextTile: TileManager
-    let weaponTurnTile: TileManager
-    if (ctrlDirection === CTRL_DIRECTION_ENUM.TOP) {
-      if (direction === DIRECTION_ENUM.TOP) {
-        playerNextY = y - 1
-        weaponNextX = x
-        weaponNextY = y - 2
-      } else if (direction === DIRECTION_ENUM.BOTTOM) {
-        playerNextY = y - 1
-        weaponNextX = x
-        weaponNextY = y
-      } else if (direction === DIRECTION_ENUM.RIGHT) {
-        playerNextY = y - 1
-        weaponNextX = x + 1
-        weaponNextY = y - 1
-      } else if (direction === DIRECTION_ENUM.LEFT) {
-        playerNextY = y - 1
-        weaponNextX = x - 1
-        weaponNextY = y - 1
+    let weaponTurnX: number
+    let weaponTurnY: number
+    if ([CTRL_DIRECTION_ENUM.TOP, CTRL_DIRECTION_ENUM.BOTTOM, CTRL_DIRECTION_ENUM.LEFT, CTRL_DIRECTION_ENUM.RIGHT].indexOf(ctrlDirection) !== -1) {
+      if (ctrlDirection === CTRL_DIRECTION_ENUM.TOP) {
+        if (direction === DIRECTION_ENUM.TOP) {
+          playerNextX = x
+          playerNextY = y - 1
+          weaponNextX = x
+          weaponNextY = y - 2
+        } else if (direction === DIRECTION_ENUM.BOTTOM) {
+          playerNextX = x
+          playerNextY = y - 1
+          weaponNextX = x
+          weaponNextY = y
+        } else if (direction === DIRECTION_ENUM.RIGHT) {
+          playerNextX = x
+          playerNextY = y - 1
+          weaponNextX = x + 1
+          weaponNextY = y - 1
+        } else if (direction === DIRECTION_ENUM.LEFT) {
+
+          playerNextY = y - 1
+          weaponNextX = x - 1
+          weaponNextY = y - 1
+        }
+        if (weaponNextY < 0 || playerNextY < 0) {
+          return true
+        }
+      } else if (ctrlDirection === CTRL_DIRECTION_ENUM.BOTTOM) {
+        if (direction === DIRECTION_ENUM.TOP) {
+          playerNextX = x
+          playerNextY = y + 1
+          weaponNextX = x
+          weaponNextY = y
+        } else if (direction === DIRECTION_ENUM.BOTTOM) {
+          playerNextX = x
+          playerNextY = y + 1
+          weaponNextX = x
+          weaponNextY = y + 2
+        } else if (direction === DIRECTION_ENUM.RIGHT) {
+          playerNextX = x
+          playerNextY = y + 1
+          weaponNextX = x + 1
+          weaponNextY = y + 1
+        } else if (direction === DIRECTION_ENUM.LEFT) {
+          playerNextX = x
+          playerNextY = y + 1
+          weaponNextX = x - 1
+          weaponNextY = y + 1
+        }
+        if (playerNextY > tileInfo[x].length - 1 || weaponNextY > tileInfo[x].length - 1) {
+          return true
+        }
+      } else if (ctrlDirection === CTRL_DIRECTION_ENUM.LEFT) {
+        if (direction === DIRECTION_ENUM.TOP) {
+          playerNextX = x - 1
+          playerNextY = y
+          weaponNextX = x - 1
+          weaponNextY = y - 1
+        } else if (direction === DIRECTION_ENUM.BOTTOM) {
+          playerNextX = x - 1
+          playerNextY = y
+          weaponNextX = x - 1
+          weaponNextY = y + 1
+        } else if (direction === DIRECTION_ENUM.RIGHT) {
+          playerNextX = x - 1
+          playerNextY = y
+          weaponNextX = x
+          weaponNextY = y
+        } else if (direction === DIRECTION_ENUM.LEFT) {
+          playerNextX = x - 1
+          playerNextY = y
+          weaponNextX = x - 2
+          weaponNextY = y
+        }
+        if (playerNextX < 0 || weaponNextX < 0) {
+          return true
+        }
+      } else if (ctrlDirection === CTRL_DIRECTION_ENUM.RIGHT) {
+        if (direction === DIRECTION_ENUM.TOP) {
+          playerNextX = x + 1
+          playerNextY = y
+          weaponNextX = x + 1
+          weaponNextY = y - 1
+        } else if (direction === DIRECTION_ENUM.BOTTOM) {
+          playerNextX = x + 1
+          playerNextY = y
+          weaponNextX = x + 1
+          weaponNextY = y + 1
+        } else if (direction === DIRECTION_ENUM.RIGHT) {
+          playerNextX = x + 1
+          playerNextY = y
+          weaponNextX = x + 2
+          weaponNextY = y
+        } else if (direction === DIRECTION_ENUM.LEFT) {
+          playerNextX = x + 1
+          playerNextY = y
+          weaponNextX = x
+          weaponNextY = y
+        }
+        if (playerNextX > tileInfo.length - 1 || weaponNextX > tileInfo.length - 1) {
+          return true
+        }
       }
-      if (weaponNextY < 0 || playerNextY < 0) {
-        return true
-      }
-      playerNextTile = tileInfo[x][playerNextY]
-      playerNextTile.x = x
-      playerNextTile.y = playerNextY
-      weaponNextTile = tileInfo[weaponNextX][weaponNextY]
-      weaponNextTile.x = weaponNextX
-      weaponNextTile.y = weaponNextY
-      return this.checkDirectTile(playerNextTile, weaponNextTile, ctrlDirection)
-    } else if (ctrlDirection === CTRL_DIRECTION_ENUM.BOTTOM) {
-      if (direction === DIRECTION_ENUM.TOP) {
-        playerNextY = y + 1
-        weaponNextX = x
-        weaponNextY = y
-      } else if (direction === DIRECTION_ENUM.BOTTOM) {
-        playerNextY = y + 1
-        weaponNextX = x
-        weaponNextY = y + 2
-      } else if (direction === DIRECTION_ENUM.RIGHT) {
-        playerNextY = y + 1
-        weaponNextX = x + 1
-        weaponNextY = y + 1
-      } else if (direction === DIRECTION_ENUM.LEFT) {
-        playerNextY = y + 1
-        weaponNextX = x - 1
-        weaponNextY = y + 1
-      }
-      if (playerNextY > tileInfo[x].length - 1 || weaponNextY > tileInfo[x].length - 1) {
-        return true
-      }
-      playerNextTile = tileInfo[x][playerNextY]
-      playerNextTile.x = x
-      playerNextTile.y = playerNextY
-      weaponNextTile = tileInfo[weaponNextX][weaponNextY]
-      weaponNextTile.x = weaponNextX
-      weaponNextTile.y = weaponNextY
-      return this.checkDirectTile(playerNextTile, weaponNextTile, ctrlDirection)
-    } else if (ctrlDirection === CTRL_DIRECTION_ENUM.LEFT) {
-      if (direction === DIRECTION_ENUM.TOP) {
-        playerNextX = x - 1
-        weaponNextX = x - 1
-        weaponNextY = y - 1
-      } else if (direction === DIRECTION_ENUM.BOTTOM) {
-        playerNextX = x - 1
-        weaponNextX = x - 1
-        weaponNextY = y + 1
-      } else if (direction === DIRECTION_ENUM.RIGHT) {
-        playerNextX = x - 1
-        weaponNextX = x
-        weaponNextY = y
-      } else if (direction === DIRECTION_ENUM.LEFT) {
-        playerNextX = x - 1
-        weaponNextX = x - 2
-        weaponNextY = y
-      }
-      if (playerNextX < 0 || weaponNextX < 0) {
-        return true
-      }
-      playerNextTile = tileInfo[playerNextX][y]
-      playerNextTile.x = playerNextX
-      playerNextTile.y = y
-      weaponNextTile = tileInfo[weaponNextX][weaponNextY]
-      weaponNextTile.x = weaponNextX
-      weaponNextTile.y = weaponNextY
-      return this.checkDirectTile(playerNextTile, weaponNextTile, ctrlDirection)
-    } else if (ctrlDirection === CTRL_DIRECTION_ENUM.RIGHT) {
-      if (direction === DIRECTION_ENUM.TOP) {
-        playerNextX = x + 1
-        weaponNextX = x + 1
-        weaponNextY = y - 1
-      } else if (direction === DIRECTION_ENUM.BOTTOM) {
-        playerNextX = x + 1
-        weaponNextX = x + 1
-        weaponNextY = y + 1
-      } else if (direction === DIRECTION_ENUM.RIGHT) {
-        playerNextX = x + 1
-        weaponNextX = x + 2
-        weaponNextY = y
-      } else if (direction === DIRECTION_ENUM.LEFT) {
-        playerNextX = x + 1
-        weaponNextX = x
-        weaponNextY = y
-      }
-      if (playerNextX > tileInfo.length - 1 || weaponNextX > tileInfo.length - 1) {
-        return true
-      }
-      playerNextTile = tileInfo[playerNextX][y]
-      playerNextTile.x = playerNextX
-      playerNextTile.y = y
-      weaponNextTile = tileInfo[weaponNextX][weaponNextY]
-      weaponNextTile.x = weaponNextX
-      weaponNextTile.y = weaponNextY
-      return this.checkDirectTile(playerNextTile, weaponNextTile, ctrlDirection)
+      return this.checkMoveDirect(playerNextX, playerNextY, weaponNextX, weaponNextY, ctrlDirection)
     } else if (ctrlDirection === CTRL_DIRECTION_ENUM.TURN_LEFT) {
       if (direction === DIRECTION_ENUM.TOP) {
-        weaponNextTile = tileInfo[x - 1][y]
-        weaponTurnTile = tileInfo[x - 1][y - 1]
-        weaponNextTile.x = x - 1
-        weaponNextTile.y = y
-        weaponTurnTile.x = x - 1
-        weaponTurnTile.y = y - 1
+        weaponNextX = x - 1
+        weaponNextY = y
+        weaponTurnX = x - 1
+        weaponTurnY = y - 1
       } else if (direction === DIRECTION_ENUM.BOTTOM) {
-        weaponNextTile = tileInfo[x + 1][y]
-        weaponTurnTile = tileInfo[x + 1][y + 1]
-        weaponNextTile.x = x + 1
-        weaponNextTile.y = y
-        weaponTurnTile.x = x + 1
-        weaponTurnTile.y = y + 1
+        weaponNextX = x + 1
+        weaponNextY = y
+        weaponTurnX = x + 1
+        weaponTurnY = y + 1
       } else if (direction === DIRECTION_ENUM.RIGHT) {
-        weaponNextTile = tileInfo[x][y - 1]
-        weaponTurnTile = tileInfo[x + 1][y - 1]
-        weaponNextTile.x = x
-        weaponNextTile.y = y - 1
-        weaponTurnTile.x = x + 1
-        weaponTurnTile.y = y - 1
+        weaponNextX = x
+        weaponNextY = y - 1
+        weaponTurnX = x + 1
+        weaponTurnY = y - 1
       } else if (direction === DIRECTION_ENUM.LEFT) {
-        weaponNextTile = tileInfo[x][y + 1]
-        weaponTurnTile = tileInfo[x - 1][y + 1]
-        weaponNextTile.x = x
-        weaponNextTile.y = y + 1
-        weaponTurnTile.x = x - 1
-        weaponTurnTile.y = y + 1
+        weaponNextX = x
+        weaponNextY = y + 1
+        weaponTurnX = x - 1
+        weaponTurnY = y + 1
       }
-      return this.checkTurnTile(weaponNextTile, weaponTurnTile, ENTITY_STATE_ENUM.BLOCK_TURN_LEFT)
+      return this.checkTurn(weaponNextX, weaponNextY, weaponTurnX, weaponTurnY, ENTITY_STATE_ENUM.BLOCK_TURN_LEFT)
     } else if (ctrlDirection === CTRL_DIRECTION_ENUM.TURN_RIGHT) {
       if (direction === DIRECTION_ENUM.TOP) {
-        weaponNextTile = tileInfo[x + 1][y]
-        weaponTurnTile = tileInfo[x + 1][y - 1]
-        weaponNextTile.x = x + 1
-        weaponNextTile.y = y
-        weaponTurnTile.x = x + 1
-        weaponTurnTile.y = y - 1
+        weaponNextX = x + 1
+        weaponNextY = y
+        weaponTurnX = x + 1
+        weaponTurnY = y - 1
       } else if (direction === DIRECTION_ENUM.BOTTOM) {
-        weaponNextTile = tileInfo[x - 1][y]
-        weaponTurnTile = tileInfo[x - 1][y + 1]
-        weaponNextTile.x = x - 1
-        weaponNextTile.y = y
-        weaponTurnTile.x = x - 1
-        weaponTurnTile.y = y + 1
+        weaponNextX = x - 1
+        weaponNextY = y
+        weaponTurnX = x - 1
+        weaponTurnY = y + 1
       } else if (direction === DIRECTION_ENUM.RIGHT) {
-        weaponNextTile = tileInfo[x][y + 1]
-        weaponTurnTile = tileInfo[x + 1][y + 1]
-        weaponNextTile.x = x
-        weaponNextTile.y = y + 1
-        weaponTurnTile.x = x + 1
-        weaponTurnTile.y = y + 1
+        weaponNextX = x
+        weaponNextY = y + 1
+        weaponTurnX = x + 1
+        weaponTurnY = y + 1
       } else if (direction === DIRECTION_ENUM.LEFT) {
-        weaponNextTile = tileInfo[x][y - 1]
-        weaponTurnTile = tileInfo[x - 1][y - 1]
-        weaponNextTile.x = x
-        weaponNextTile.y = y - 1
-        weaponTurnTile.x = x - 1
-        weaponTurnTile.y = y - 1
+        weaponNextX = x
+        weaponNextY = y - 1
+        weaponTurnX = x - 1
+        weaponTurnY = y - 1
       }
-      return this.checkTurnTile(weaponNextTile, weaponTurnTile, ENTITY_STATE_ENUM.BLOCK_TURN_RIGHT)
+      return this.checkTurn(weaponNextX, weaponNextY, weaponTurnX, weaponTurnY, ENTITY_STATE_ENUM.BLOCK_TURN_LEFT)
     }
     return false
   }
 
   // 直线移动时的检测
-  checkDirectTile(playerNextTile: TileManager, weaponNextTile: TileManager, ctrlDirection: CTRL_DIRECTION_ENUM) {
+  private checkMoveDirect(playerNextX: number, playerNextY: number, weaponNextX: number, weaponNextY: number, ctrlDirection: CTRL_DIRECTION_ENUM) {
+    const tileInfo = DataManager.Instance.tileInfo
+    const playerNextTile: TileManager = tileInfo[playerNextX][playerNextY]
+    const weaponNextTile: TileManager = tileInfo[weaponNextX][weaponNextY]
+
     // 检测是否经过地裂
     const bursts = DataManager.Instance.busts.filter(burst => burst.state !== ENTITY_STATE_ENUM.DEATH)
     for (let i = 0; i < bursts.length; i++) {
       const {x: burstX, y: burstY} = bursts[i]
-      if ((playerNextTile.x === burstX && playerNextTile.y === burstY) && (!weaponNextTile || weaponNextTile.turnable)) {
+      if ((playerNextX === burstX && playerNextY === burstY) && (!weaponNextTile || weaponNextTile.turnable)) {
         return false
       }
     }
 
-    if (!(playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable))) {
-      if (ctrlDirection === CTRL_DIRECTION_ENUM.BOTTOM) {
-        this.state = ENTITY_STATE_ENUM.BLOCK_BACK
-      } else if (ctrlDirection === CTRL_DIRECTION_ENUM.TOP) {
-        this.state = ENTITY_STATE_ENUM.BLOCK_FRONT
-      } else if (ctrlDirection === CTRL_DIRECTION_ENUM.LEFT) {
-        this.state = ENTITY_STATE_ENUM.BLOCK_LEFT
-      } else if (ctrlDirection === CTRL_DIRECTION_ENUM.RIGHT) {
-        this.state = ENTITY_STATE_ENUM.BLOCK_RIGHT
-      }
-      return true
-    }
-    const {x: doorX, y: doorY, state: doorState} = DataManager.Instance.door
     // 检测是否和门产生碰撞
-    if (doorState !== ENTITY_STATE_ENUM.DEATH &&
-      ((playerNextTile.x === doorX && playerNextTile.y === doorY) || (weaponNextTile.x === doorX && weaponNextTile.y === doorY))) {
+    const {x: doorX, y: doorY, state: doorState} = DataManager.Instance.door
+    if (doorState !== ENTITY_STATE_ENUM.DEATH && ((playerNextX === doorX && playerNextY === doorY) || (weaponNextX === doorX && weaponNextY === doorY))) {
       if (ctrlDirection === CTRL_DIRECTION_ENUM.BOTTOM) {
         this.state = ENTITY_STATE_ENUM.BLOCK_BACK
       } else if (ctrlDirection === CTRL_DIRECTION_ENUM.TOP) {
@@ -353,12 +318,13 @@ export class PlayerManager extends EntityManager {
       }
       return true
     }
+
     // 检测和敌人碰撞
     const enemies = DataManager.Instance.enemies.filter(enemy => enemy.state !== ENTITY_STATE_ENUM.DEATH)
     for (let i = 0; i < enemies.length; i++) {
       const enemy = enemies[i]
       const {x: enemyX, y: enemyY} = enemy
-      if ((playerNextTile.x === enemyX && playerNextTile.y === enemyY) || (weaponNextTile.x === enemyX && weaponNextTile.y === enemyY)) {
+      if ((playerNextTile.x === enemyX && playerNextTile.y === enemyY) || (weaponNextX === enemyX && weaponNextY === enemyY)) {
         if (ctrlDirection === CTRL_DIRECTION_ENUM.BOTTOM) {
           this.state = ENTITY_STATE_ENUM.BLOCK_BACK
         } else if (ctrlDirection === CTRL_DIRECTION_ENUM.TOP) {
@@ -372,23 +338,42 @@ export class PlayerManager extends EntityManager {
       }
     }
 
+    // 普通地砖检测
+    if (!(playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable))) {
+      if (ctrlDirection === CTRL_DIRECTION_ENUM.BOTTOM) {
+        this.state = ENTITY_STATE_ENUM.BLOCK_BACK
+      } else if (ctrlDirection === CTRL_DIRECTION_ENUM.TOP) {
+        this.state = ENTITY_STATE_ENUM.BLOCK_FRONT
+      } else if (ctrlDirection === CTRL_DIRECTION_ENUM.LEFT) {
+        this.state = ENTITY_STATE_ENUM.BLOCK_LEFT
+      } else if (ctrlDirection === CTRL_DIRECTION_ENUM.RIGHT) {
+        this.state = ENTITY_STATE_ENUM.BLOCK_RIGHT
+      }
+      return true
+    }
+
     return false
   }
 
-  private checkTurnTile(weaponNextTile: TileManager, weaponTurnTile: TileManager, blockType: ENTITY_STATE_ENUM.BLOCK_TURN_LEFT | ENTITY_STATE_ENUM.BLOCK_TURN_RIGHT) {
+  private checkTurn(weaponNextX: number, weaponNextY: number, weaponTurnX: number, weaponTurnY: number, blockType: ENTITY_STATE_ENUM.BLOCK_TURN_LEFT | ENTITY_STATE_ENUM.BLOCK_TURN_RIGHT) {
+    const tileInfo = DataManager.Instance.tileInfo
+    const weaponTurnTile: TileManager = tileInfo[weaponTurnX][weaponTurnY]
+    const weaponNextTile: TileManager = tileInfo[weaponNextX][weaponNextY]
+
     // 检测是否和门产生碰撞
     const {x: doorX, y: doorY, state: doorState} = DataManager.Instance.door
     if (doorState !== ENTITY_STATE_ENUM.DEATH &&
-      ((weaponNextTile.x === doorX && weaponNextTile.y === doorY) || (weaponTurnTile.x === doorX && weaponTurnTile.y === doorY))) {
+      ((weaponNextX === doorX && weaponNextY === doorY) || (weaponTurnX === doorX && weaponTurnY === doorY))) {
       this.state = blockType
       return true
     }
+
     // 检测和敌人碰撞
     const enemies = DataManager.Instance.enemies.filter(enemy => enemy.state !== ENTITY_STATE_ENUM.DEATH)
     for (let i = 0; i < enemies.length; i++) {
       const enemy = enemies[i]
       const {x: enemyX, y: enemyY} = enemy
-      if ((weaponNextTile.x === enemyX && weaponNextTile.y === enemyY) || (weaponTurnTile.x === enemyX && weaponTurnTile.y === enemyY)) {
+      if ((weaponNextX === enemyX && weaponNextY === enemyY) || (weaponTurnX === enemyX && weaponTurnY === enemyY)) {
         this.state = blockType
         return true
       }
@@ -400,6 +385,7 @@ export class PlayerManager extends EntityManager {
     }
     return false
   }
+
 
   private onDead(type: ENTITY_STATE_ENUM) {
     this.state = type
@@ -432,6 +418,8 @@ export class PlayerManager extends EntityManager {
     }
     return ''
   }
+
+
 }
 
 

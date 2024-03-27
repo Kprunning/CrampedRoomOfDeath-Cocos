@@ -31,10 +31,10 @@ export class BattleManager extends Component {
   start() {
     this.generateStage()
     this.initLevel()
-    this.generatePlayer()
     this.generateEnemies()
     this.generateDoor()
     this.generateBurst()
+    this.generatePlayer()
   }
 
   // 生成舞台
