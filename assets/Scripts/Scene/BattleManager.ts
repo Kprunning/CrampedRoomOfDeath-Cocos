@@ -11,6 +11,7 @@ import WoodenSkeletonManager from '../WoodenSkeleton/WoodenSkeletonManager'
 import IronSkeletonManager from '../IronSkeleton/IronSkeletonManager'
 import {DoorManager} from '../Door/DoorManager'
 import BurstManager from '../Burst/BurstManager'
+import SpikesManager from '../Spikes/SpikesManager'
 
 const {ccclass, property} = _decorator
 
@@ -32,7 +33,8 @@ export class BattleManager extends Component {
     this.generateStage()
     this.initLevel()
     this.generateDoor()
-    this.generateBurst()
+    // this.generateBurst()
+    this.generateSpikes()
     await this.generateEnemies()
     this.generatePlayer()
   }
@@ -114,6 +116,21 @@ export class BattleManager extends Component {
       state: ENTITY_STATE_ENUM.IDLE
     })
     DataManager.Instance.busts.push(burstManager)
+  }
+
+
+  // 生成地刺
+  private async generateSpikes() {
+    const spike = createUINode()
+    spike.setParent(this.stage)
+    const spikesManager = spike.addComponent(SpikesManager)
+    await spikesManager.init({
+      x: 2,
+      y: 6,
+      type: ENTITY_TYPE_ENUM.SPIKES_FOUR,
+      count: 0
+    })
+    DataManager.Instance.spikes.push(spikesManager)
   }
 
   private initLevel() {
