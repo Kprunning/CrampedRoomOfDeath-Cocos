@@ -28,12 +28,12 @@ export class BattleManager extends Component {
   }
 
 
-  start() {
+  async start() {
     this.generateStage()
     this.initLevel()
-    this.generateEnemies()
     this.generateDoor()
     this.generateBurst()
+    await this.generateEnemies()
     this.generatePlayer()
   }
 
