@@ -37,15 +37,7 @@ export class BattleManager extends Component {
 
   async start() {
     this.generateStage()
-    this.initLevel()
-    await Promise.all([
-      this.generateDoor(),
-      this.generateBurst(),
-      this.generateSpikes(),
-      this.generateEnemies(),
-      this.generateSmokeLayer()
-    ])
-    await this.generatePlayer()
+    await this.initLevel()
   }
 
   // 生成舞台
@@ -118,11 +110,11 @@ export class BattleManager extends Component {
   }
 
   // 玩家移动时,生成烟雾效果
-  private generateSmoke(x: number, y: number, direction: DIRECTION_ENUM) {
+  private async generateSmoke(x: number, y: number, direction: DIRECTION_ENUM) {
     const smoke = createUINode()
     smoke.setParent(this.smokeLayer)
     const smokeManager = smoke.addComponent(SmokeManager)
-    smokeManager.init({
+    await smokeManager.init({
       x,
       y,
       state: ENTITY_STATE_ENUM.IDLE,
@@ -132,7 +124,7 @@ export class BattleManager extends Component {
     DataManager.Instance.smokes.push(smokeManager)
   }
 
-  private initLevel() {
+  private async initLevel() {
     const level = levels[`level${DataManager.Instance.levelIndex}`]
     if (level) {
       this.clearLevel()
@@ -140,14 +132,22 @@ export class BattleManager extends Component {
       const {mapInfo} = level
       DataManager.Instance.mapInfo = mapInfo
       DataManager.Instance.mapRowCount = mapInfo.length || 0
-      DataManager.Instance.mapColumnCount = mapInfo[0].length || 0
-      this.generateTileMap()
+      DataManager.Instance.mapColumnCount = mapInfo[0]?.length || 0
+      await Promise.all([
+        this.generateTileMap(),
+        this.generateDoor(),
+        this.generateBurst(),
+        this.generateSpikes(),
+        this.generateEnemies(),
+        this.generateSmokeLayer()
+      ])
+      await this.generatePlayer()
     }
   }
 
-  nextLevel() {
+  async nextLevel() {
     DataManager.Instance.levelIndex++
-    this.initLevel()
+    await this.initLevel()
   }
 
   clearLevel() {

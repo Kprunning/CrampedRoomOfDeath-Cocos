@@ -163,7 +163,7 @@ export class PlayerManager extends EntityManager {
           weaponNextX = x - 1
           weaponNextY = y - 1
         }
-        if (weaponNextY < 0 || playerNextY < 0) {
+        if (playerNextY < 0) {
           return true
         }
       } else if (ctrlDirection === CTRL_DIRECTION_ENUM.BOTTOM) {
@@ -188,7 +188,7 @@ export class PlayerManager extends EntityManager {
           weaponNextX = x - 1
           weaponNextY = y + 1
         }
-        if (playerNextY > tileInfo[x].length - 1 || weaponNextY > tileInfo[x].length - 1) {
+        if (playerNextY > tileInfo[x].length - 1) {
           return true
         }
       } else if (ctrlDirection === CTRL_DIRECTION_ENUM.LEFT) {
@@ -213,7 +213,7 @@ export class PlayerManager extends EntityManager {
           weaponNextX = x - 2
           weaponNextY = y
         }
-        if (playerNextX < 0 || weaponNextX < 0) {
+        if (playerNextX < 0) {
           return true
         }
       } else if (ctrlDirection === CTRL_DIRECTION_ENUM.RIGHT) {
@@ -238,7 +238,7 @@ export class PlayerManager extends EntityManager {
           weaponNextX = x
           weaponNextY = y
         }
-        if (playerNextX > tileInfo.length - 1 || weaponNextX > tileInfo.length - 1) {
+        if (playerNextX > tileInfo.length - 1) {
           return true
         }
       }
@@ -296,8 +296,8 @@ export class PlayerManager extends EntityManager {
   // 直线移动时的检测
   private checkMoveDirect(playerNextX: number, playerNextY: number, weaponNextX: number, weaponNextY: number, ctrlDirection: CTRL_DIRECTION_ENUM) {
     const tileInfo = DataManager.Instance.tileInfo
-    const playerNextTile: TileManager = tileInfo[playerNextX][playerNextY]
-    const weaponNextTile: TileManager = tileInfo[weaponNextX][weaponNextY]
+    const playerNextTile: TileManager = tileInfo[playerNextX]?.[playerNextY]
+    const weaponNextTile: TileManager = tileInfo[weaponNextX]?.[weaponNextY]
 
     // 检测是否经过地裂
     const bursts = DataManager.Instance.busts.filter(burst => burst.state !== ENTITY_STATE_ENUM.DEATH)

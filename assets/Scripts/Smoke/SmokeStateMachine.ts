@@ -1,8 +1,9 @@
 import {_decorator, Animation} from 'cc'
-import {PARAMS_NAME_ENUM} from '../../Enums'
+import {ENTITY_STATE_ENUM, PARAMS_NAME_ENUM} from '../../Enums'
 import StateMachine, {getInitParamsNumber, getInitParamsTrigger} from '../../Base/StateMachine'
 import IdleSubStateMachine from './IdleSubStateMachine'
 import DeathSubStateMachine from './DeathSubStateMachine'
+import EntityManager from '../../Base/EntityManager'
 
 const {ccclass, property} = _decorator
 
@@ -14,6 +15,7 @@ export default class SmokeStateMachine extends StateMachine {
     this.animationComponent = this.addComponent(Animation)
     this.initParams()
     this.initStateMachines()
+    this.initAnimationComponent()
     await Promise.all(this.waitingList)
   }
 
@@ -28,6 +30,15 @@ export default class SmokeStateMachine extends StateMachine {
     this.stateMachines.set(PARAMS_NAME_ENUM.DEATH, new DeathSubStateMachine(this))
   }
 
+  private initAnimationComponent() {
+    this.animationComponent.on(Animation.EventType.FINISHED, () => {
+      const name = this.animationComponent.defaultClip.name
+      const whiteList = ['idle']
+      if (whiteList.some(item => name.includes(item))) {
+        this.node.getComponent(EntityManager).state = ENTITY_STATE_ENUM.DEATH
+      }
+    })
+  }
 
   run() {
     switch (this.currentState) {
