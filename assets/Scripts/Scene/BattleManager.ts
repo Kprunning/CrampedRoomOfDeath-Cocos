@@ -5,13 +5,14 @@ import levels, {ILevel} from '../../Levels'
 import {TILE_HEIGHT, TILE_WIDTH} from '../Tile/TileManager'
 import DataManager from '../../Runtime/DataManager'
 import EventManager from '../../Runtime/EventManager'
-import {ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM} from '../../Enums'
+import {DIRECTION_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM} from '../../Enums'
 import {PlayerManager} from '../Player/PlayerManager'
 import WoodenSkeletonManager from '../WoodenSkeleton/WoodenSkeletonManager'
 import IronSkeletonManager from '../IronSkeleton/IronSkeletonManager'
 import {DoorManager} from '../Door/DoorManager'
 import BurstManager from '../Burst/BurstManager'
 import SpikesManager from '../Spikes/SpikesManager'
+import SmokeManager from '../Smoke/SmokeManager'
 
 const {ccclass, property} = _decorator
 
@@ -19,15 +20,18 @@ const {ccclass, property} = _decorator
 export class BattleManager extends Component {
   private stage: Node
   private level: ILevel
+  private smokeLayer: Node
 
   onLoad() {
     EventManager.Instance.on(EVENT_ENUM.NEXT_LEVEL, this.nextLevel, this)
     EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END, this.checkArrived, this)
+    EventManager.Instance.on(EVENT_ENUM.SHOW_SMOKE, this.generateSmoke, this)
   }
 
   onDestroy() {
     EventManager.Instance.off(EVENT_ENUM.NEXT_LEVEL, this.nextLevel)
     EventManager.Instance.off(EVENT_ENUM.PLAYER_MOVE_END, this.checkArrived)
+    EventManager.Instance.off(EVENT_ENUM.SHOW_SMOKE, this.generateSmoke)
   }
 
 
@@ -38,7 +42,8 @@ export class BattleManager extends Component {
       this.generateDoor(),
       this.generateBurst(),
       this.generateSpikes(),
-      this.generateEnemies()
+      this.generateEnemies(),
+      this.generateSmokeLayer()
     ])
     await this.generatePlayer()
   }
@@ -106,6 +111,27 @@ export class BattleManager extends Component {
     }
   }
 
+  // 生成烟雾图层,保证玩家显示优先
+  private async generateSmokeLayer() {
+    this.smokeLayer = createUINode()
+    this.smokeLayer.setParent(this.stage)
+  }
+
+  // 玩家移动时,生成烟雾效果
+  private generateSmoke(x: number, y: number, direction: DIRECTION_ENUM) {
+    const smoke = createUINode()
+    smoke.setParent(this.smokeLayer)
+    const smokeManager = smoke.addComponent(SmokeManager)
+    smokeManager.init({
+      x,
+      y,
+      state: ENTITY_STATE_ENUM.IDLE,
+      type: ENTITY_TYPE_ENUM.SMOKE,
+      direction
+    })
+    DataManager.Instance.smokes.push(smokeManager)
+  }
+
   private initLevel() {
     const level = levels[`level${DataManager.Instance.levelIndex}`]
     if (level) {
@@ -149,12 +175,16 @@ export class BattleManager extends Component {
 
   // 人物到达门后,进入下一关
   private checkArrived() {
+    if (!DataManager.Instance.door || !DataManager.Instance.player) {
+      return
+    }
     const {x: playerX, y: playerY} = DataManager.Instance.player
     const {x: doorX, y: doorY, state: doorState} = DataManager.Instance.door
     if (playerX === doorX && playerY === doorY && doorState === ENTITY_STATE_ENUM.DEATH) {
       EventManager.Instance.emit(EVENT_ENUM.NEXT_LEVEL)
     }
   }
+
 }
 
 

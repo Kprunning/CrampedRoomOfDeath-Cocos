@@ -6,6 +6,7 @@ import EnemyManager from '../Base/EnemyManager'
 import {DoorManager} from '../Scripts/Door/DoorManager'
 import BurstManager from '../Scripts/Burst/BurstManager'
 import SpikesManager from '../Scripts/Spikes/SpikesManager'
+import SmokeManager from '../Scripts/Smoke/SmokeManager'
 
 export default class DataManager extends Singleton {
   mapInfo: Array<Array<ITiler>>
@@ -18,6 +19,7 @@ export default class DataManager extends Singleton {
   door: DoorManager
   busts: BurstManager[]
   spikes: SpikesManager[]
+  smokes: SmokeManager[]
 
   static get Instance(): DataManager {
     return super.GetInstance<DataManager>()
@@ -33,5 +35,6 @@ export default class DataManager extends Singleton {
     this.enemies = []
     this.spikes = []
     this.busts = []
+    this.smokes = []
   }
 }

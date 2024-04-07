@@ -44,18 +44,22 @@ export class PlayerManager extends EntityManager {
       case CTRL_DIRECTION_ENUM.BOTTOM:
         this.targetY++
         this.isMoving = true
+        this.showSmoke(ctrlDirection)
         break
       case CTRL_DIRECTION_ENUM.TOP:
         this.targetY--
         this.isMoving = true
+        this.showSmoke(ctrlDirection)
         break
       case CTRL_DIRECTION_ENUM.LEFT:
         this.targetX--
         this.isMoving = true
+        this.showSmoke(ctrlDirection)
         break
       case CTRL_DIRECTION_ENUM.RIGHT:
         this.targetX++
         this.isMoving = true
+        this.showSmoke(ctrlDirection)
         break
       case CTRL_DIRECTION_ENUM.TURN_LEFT:
         if (this.direction === DIRECTION_ENUM.TOP) {
@@ -419,7 +423,9 @@ export class PlayerManager extends EntityManager {
     return ''
   }
 
-
+  private showSmoke(ctrlDirection: CTRL_DIRECTION_ENUM) {
+    EventManager.Instance.emit(EVENT_ENUM.SHOW_SMOKE, this.x, this.y, ctrlDirection)
+  }
 }
 
 

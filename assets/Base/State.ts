@@ -3,12 +3,12 @@ import ResourceManager from '../Runtime/ResourceManager'
 import StateMachine from './StateMachine'
 import {sortSpriteFrames} from '../Utils'
 
-const ANIMATION_SPEED = 1 / 8
+export const ANIMATION_SPEED = 1 / 8
 
 export default class State {
   private animationClip: AnimationClip
 
-  constructor(private fsm: StateMachine, private path: string, private wrapMode: AnimationClip.WrapMode = AnimationClip.WrapMode.Normal) {
+  constructor(private fsm: StateMachine, private path: string, private wrapMode: AnimationClip.WrapMode = AnimationClip.WrapMode.Normal, speed: number = ANIMATION_SPEED) {
     this.init()
   }
 
