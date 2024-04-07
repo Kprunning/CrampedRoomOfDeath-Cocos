@@ -7,7 +7,6 @@ import BlockSubStateMachine from './BlockSubStateMachine'
 import EntityManager from '../../Base/EntityManager'
 import DeathSubStateMachine from './DeathSubStateMachine'
 import AttackSubStateMachine from './AttackSubStateMachine'
-import DataManager from '../../Runtime/DataManager'
 import AirDeathSubStateMachine from './AirDeathSubStateMachine'
 
 const {ccclass, property} = _decorator

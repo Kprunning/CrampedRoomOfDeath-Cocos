@@ -10,6 +10,13 @@ export interface IEntity {
   type: ENTITY_TYPE_ENUM
 }
 
+export interface ISpikes {
+  x: number,
+  y: number,
+  type: ENTITY_TYPE_ENUM,
+  count: number,
+}
+
 
 export interface ITiler {
   src: number | null,
