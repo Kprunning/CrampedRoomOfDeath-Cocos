@@ -5,7 +5,7 @@ import levels, {ILevel} from '../../Levels'
 import {TILE_HEIGHT, TILE_WIDTH} from '../Tile/TileManager'
 import DataManager from '../../Runtime/DataManager'
 import EventManager from '../../Runtime/EventManager'
-import {DIRECTION_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM} from '../../Enums'
+import {ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM} from '../../Enums'
 import {PlayerManager} from '../Player/PlayerManager'
 import WoodenSkeletonManager from '../WoodenSkeleton/WoodenSkeletonManager'
 import IronSkeletonManager from '../IronSkeleton/IronSkeletonManager'
@@ -22,21 +22,25 @@ export class BattleManager extends Component {
 
   onLoad() {
     EventManager.Instance.on(EVENT_ENUM.NEXT_LEVEL, this.nextLevel, this)
+    EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END, this.checkArrived, this)
   }
 
   onDestroy() {
     EventManager.Instance.off(EVENT_ENUM.NEXT_LEVEL, this.nextLevel)
+    EventManager.Instance.off(EVENT_ENUM.PLAYER_MOVE_END, this.checkArrived)
   }
 
 
   async start() {
     this.generateStage()
     this.initLevel()
-    this.generateDoor()
-    // this.generateBurst()
-    this.generateSpikes()
-    await this.generateEnemies()
-    this.generatePlayer()
+    await Promise.all([
+      this.generateDoor(),
+      this.generateBurst(),
+      this.generateSpikes(),
+      this.generateEnemies()
+    ])
+    await this.generatePlayer()
   }
 
   // 生成舞台
@@ -50,42 +54,22 @@ export class BattleManager extends Component {
     const player = createUINode()
     player.setParent(this.stage)
     const playerManager = player.addComponent(PlayerManager)
-    await playerManager.init({
-      x: 2,
-      y: 8,
-      type: ENTITY_TYPE_ENUM.PLAYER,
-      direction: DIRECTION_ENUM.TOP,
-      state: ENTITY_STATE_ENUM.IDLE
-    })
+    await playerManager.init(this.level.player)
     DataManager.Instance.player = playerManager
     EventManager.Instance.emit(EVENT_ENUM.PLAYER_BORN, true)
   }
 
   // 生成敌人
   private async generateEnemies() {
-    const enemy1 = createUINode()
-    enemy1.setParent(this.stage)
-    const woodenSkeletonManager = enemy1.addComponent(WoodenSkeletonManager)
-    await woodenSkeletonManager.init({
-      x: 2,
-      y: 4,
-      type: ENTITY_TYPE_ENUM.SKELETON_WOODEN,
-      direction: DIRECTION_ENUM.TOP,
-      state: ENTITY_STATE_ENUM.IDLE
-    })
-    DataManager.Instance.enemies.push(woodenSkeletonManager)
-
-    const enemy2 = createUINode()
-    enemy2.setParent(this.stage)
-    const ironSkeletonManager = enemy2.addComponent(IronSkeletonManager)
-    await ironSkeletonManager.init({
-      x: 2,
-      y: 5,
-      type: ENTITY_TYPE_ENUM.SKELETON_IRON,
-      direction: DIRECTION_ENUM.TOP,
-      state: ENTITY_STATE_ENUM.IDLE
-    })
-    DataManager.Instance.enemies.push(ironSkeletonManager)
+    const enemies = this.level.enemies
+    for (let i = 0; i < enemies.length; i++) {
+      const enemy = createUINode()
+      enemy.setParent(this.stage)
+      const Manager = enemies[i].type === ENTITY_TYPE_ENUM.SKELETON_WOODEN ? WoodenSkeletonManager : IronSkeletonManager
+      const skeletonManager = enemy.addComponent(Manager)
+      await skeletonManager.init(enemies[i])
+      DataManager.Instance.enemies.push(skeletonManager)
+    }
   }
 
   // 生成门
@@ -93,44 +77,33 @@ export class BattleManager extends Component {
     const door = createUINode()
     door.setParent(this.stage)
     const doorManager = door.addComponent(DoorManager)
-    await doorManager.init({
-      x: 7,
-      y: 8,
-      type: ENTITY_TYPE_ENUM.DOOR,
-      direction: DIRECTION_ENUM.TOP,
-      state: ENTITY_STATE_ENUM.IDLE
-    })
+    await doorManager.init(this.level.door)
     DataManager.Instance.door = doorManager
   }
 
   // 生成地裂
   private async generateBurst() {
-    const burst = createUINode()
-    burst.setParent(this.stage)
-    const burstManager = burst.addComponent(BurstManager)
-    await burstManager.init({
-      x: 2,
-      y: 6,
-      type: ENTITY_TYPE_ENUM.BURST,
-      direction: DIRECTION_ENUM.TOP,
-      state: ENTITY_STATE_ENUM.IDLE
-    })
-    DataManager.Instance.busts.push(burstManager)
+    const bursts = this.level.bursts
+    for (let i = 0; i < bursts.length; i++) {
+      const burst = createUINode()
+      burst.setParent(this.stage)
+      const burstManager = burst.addComponent(BurstManager)
+      await burstManager.init(bursts[i])
+      DataManager.Instance.busts.push(burstManager)
+    }
   }
 
 
   // 生成地刺
   private async generateSpikes() {
-    const spike = createUINode()
-    spike.setParent(this.stage)
-    const spikesManager = spike.addComponent(SpikesManager)
-    await spikesManager.init({
-      x: 2,
-      y: 6,
-      type: ENTITY_TYPE_ENUM.SPIKES_FOUR,
-      count: 0
-    })
-    DataManager.Instance.spikes.push(spikesManager)
+    const spikes = this.level.spikes
+    for (let i = 0; i < spikes.length; i++) {
+      const spike = createUINode()
+      spike.setParent(this.stage)
+      const spikesManager = spike.addComponent(SpikesManager)
+      await spikesManager.init(spikes[i])
+      DataManager.Instance.spikes.push(spikesManager)
+    }
   }
 
   private initLevel() {
@@ -174,7 +147,14 @@ export class BattleManager extends Component {
     this.stage.setPosition(-posX, posY)
   }
 
-
+  // 人物到达门后,进入下一关
+  private checkArrived() {
+    const {x: playerX, y: playerY} = DataManager.Instance.player
+    const {x: doorX, y: doorY, state: doorState} = DataManager.Instance.door
+    if (playerX === doorX && playerY === doorY && doorState === ENTITY_STATE_ENUM.DEATH) {
+      EventManager.Instance.emit(EVENT_ENUM.NEXT_LEVEL)
+    }
+  }
 }
 
 
