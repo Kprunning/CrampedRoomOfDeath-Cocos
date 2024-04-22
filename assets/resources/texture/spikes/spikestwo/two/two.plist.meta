@@ -1,0 +1,63 @@
+{
+  "ver": "1.0.8",
+  "importer": "sprite-atlas",
+  "imported": true,
+  "uuid": "8580983f-caab-458e-91c3-23c00502b92d",
+  "files": [
+    ".json"
+  ],
+  "subMetas": {
+    "f0d8d": {
+      "importer": "sprite-frame",
+      "uuid": "8580983f-caab-458e-91c3-23c00502b92d@f0d8d",
+      "displayName": "",
+      "id": "f0d8d",
+      "name": "spikes (9)",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": 0,
+        "offsetY": 0,
+        "trimX": 0,
+        "trimY": 0,
+        "width": 320,
+        "height": 320,
+        "rawWidth": 320,
+        "rawHeight": 320,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "552f9215-21b7-441b-9705-c3aec60a9867@6c48a",
+        "atlasUuid": "8580983f-caab-458e-91c3-23c00502b92d"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "atlasTextureName": "two.png",
+    "format": 3,
+    "uuid": "8580983f-caab-458e-91c3-23c00502b92d",
+    "textureUuid": "552f9215-21b7-441b-9705-c3aec60a9867@6c48a"
+  }
+}
