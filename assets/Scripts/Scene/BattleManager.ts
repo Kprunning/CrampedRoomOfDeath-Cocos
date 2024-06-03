@@ -13,6 +13,7 @@ import {DoorManager} from '../Door/DoorManager'
 import BurstManager from '../Burst/BurstManager'
 import SpikesManager from '../Spikes/SpikesManager'
 import SmokeManager from '../Smoke/SmokeManager'
+import FaderManager from 'db://assets/Runtime/FaderManager'
 
 const {ccclass, property} = _decorator
 
@@ -38,6 +39,31 @@ export class BattleManager extends Component {
   async start() {
     this.generateStage()
     await this.initLevel()
+  }
+
+  private async initLevel() {
+    const level = levels[`level${DataManager.Instance.levelIndex}`]
+    if (level) {
+      await FaderManager.Instance.fadeIn()
+      this.clearLevel()
+      this.level = level
+      const {mapInfo} = level
+      DataManager.Instance.mapInfo = mapInfo
+      DataManager.Instance.mapRowCount = mapInfo.length || 0
+      DataManager.Instance.mapColumnCount = mapInfo[0]?.length || 0
+      await Promise.all([
+        this.generateTileMap(),
+        this.generateDoor(),
+        this.generateBurst(),
+        this.generateSpikes(),
+        this.generateEnemies(),
+        this.generateSmokeLayer()
+      ])
+      // 这里后生成玩家是为了保证玩家的图层在最上层
+      await this.generatePlayer()
+
+      await FaderManager.Instance.fadeOut()
+    }
   }
 
   // 生成舞台
@@ -124,26 +150,6 @@ export class BattleManager extends Component {
     DataManager.Instance.smokes.push(smokeManager)
   }
 
-  private async initLevel() {
-    const level = levels[`level${DataManager.Instance.levelIndex}`]
-    if (level) {
-      this.clearLevel()
-      this.level = level
-      const {mapInfo} = level
-      DataManager.Instance.mapInfo = mapInfo
-      DataManager.Instance.mapRowCount = mapInfo.length || 0
-      DataManager.Instance.mapColumnCount = mapInfo[0]?.length || 0
-      await Promise.all([
-        this.generateTileMap(),
-        this.generateDoor(),
-        this.generateBurst(),
-        this.generateSpikes(),
-        this.generateEnemies(),
-        this.generateSmokeLayer()
-      ])
-      await this.generatePlayer()
-    }
-  }
 
   async nextLevel() {
     DataManager.Instance.levelIndex++
