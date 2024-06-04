@@ -1,5 +1,5 @@
 import {_decorator} from 'cc'
-import {CTRL_DIRECTION_ENUM, DIRECTION_ENUM, ENTITY_STATE_ENUM, EVENT_ENUM} from '../../Enums'
+import {CTRL_DIRECTION_ENUM, DIRECTION_ENUM, ENTITY_STATE_ENUM, EVENT_ENUM, SHAKE_TYPE_ENUM} from '../../Enums'
 import EventManager from '../../Runtime/EventManager'
 import {PlayerStateMachine} from './PlayerStateMachine'
 import EntityManager from '../../Base/EntityManager'
@@ -126,6 +126,35 @@ export class PlayerManager extends EntityManager {
     }
 
     if (this.willBlock(ctrlDirection)) {
+      if (ctrlDirection === CTRL_DIRECTION_ENUM.TOP) {
+        EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.TOP)
+      } else if (ctrlDirection === CTRL_DIRECTION_ENUM.BOTTOM) {
+        EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.BOTTOM)
+      } else if (ctrlDirection === CTRL_DIRECTION_ENUM.LEFT) {
+        EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.LEFT)
+      } else if (ctrlDirection === CTRL_DIRECTION_ENUM.RIGHT) {
+        EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.RIGHT)
+      } else if (ctrlDirection === CTRL_DIRECTION_ENUM.TURN_LEFT) {
+        if (this.direction === DIRECTION_ENUM.TOP) {
+          EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.LEFT)
+        } else if (this.direction === DIRECTION_ENUM.BOTTOM) {
+          EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.RIGHT)
+        } else if (this.direction === DIRECTION_ENUM.RIGHT) {
+          EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.TOP)
+        } else if (this.direction === DIRECTION_ENUM.LEFT) {
+          EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.BOTTOM)
+        }
+      }else if (ctrlDirection === CTRL_DIRECTION_ENUM.TURN_RIGHT) {
+        if (this.direction === DIRECTION_ENUM.TOP) {
+          EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.RIGHT)
+        } else if (this.direction === DIRECTION_ENUM.BOTTOM) {
+          EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.LEFT)
+        } else if (this.direction === DIRECTION_ENUM.RIGHT) {
+          EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.BOTTOM)
+        } else if (this.direction === DIRECTION_ENUM.LEFT) {
+          EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.TOP)
+        }
+      }
       return
     }
     this.move(ctrlDirection)

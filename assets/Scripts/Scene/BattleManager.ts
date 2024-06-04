@@ -14,6 +14,7 @@ import BurstManager from '../Burst/BurstManager'
 import SpikesManager from '../Spikes/SpikesManager'
 import SmokeManager from '../Smoke/SmokeManager'
 import FaderManager from 'db://assets/Runtime/FaderManager'
+import {ShakeManager} from 'db://assets/Scripts/UI/ShakeManager'
 
 const {ccclass, property} = _decorator
 
@@ -70,6 +71,7 @@ export class BattleManager extends Component {
   private generateStage() {
     this.stage = createUINode()
     this.stage.setParent(this.node)
+    this.stage.addComponent(ShakeManager)
   }
 
   // 生成玩家
@@ -177,6 +179,7 @@ export class BattleManager extends Component {
     const posX = DataManager.Instance.mapRowCount * TILE_WIDTH / 2
     const posY = DataManager.Instance.mapColumnCount * TILE_HEIGHT / 2 + 80
     this.stage.setPosition(-posX, posY)
+    this.stage.getComponent(ShakeManager).stop()
   }
 
   // 人物到达门后,进入下一关

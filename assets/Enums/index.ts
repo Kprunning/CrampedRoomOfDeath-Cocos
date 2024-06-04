@@ -20,6 +20,7 @@ export enum EVENT_ENUM {
   ATTACK_ENEMY = 'ATTACK_ENEMY',
   DOOR_OPEN = 'DOOR_OPEN',
   SHOW_SMOKE = 'SHOW_SMOKE',
+  SCREEN_SHAKE = 'SCREEN_SHAKE',
 }
 
 export enum CTRL_DIRECTION_ENUM {
@@ -124,4 +125,11 @@ export enum SPIKE_COUNT_MAP_NUM_ENUM {
   THREE = 3,
   FOUR = 4,
   FIVE = 5,
+}
+
+export enum SHAKE_TYPE_ENUM {
+  TOP = 'TOP',
+  BOTTOM = 'BOTTOM',
+  LEFT = 'LEFT',
+  RIGHT = 'RIGHT',
 }
