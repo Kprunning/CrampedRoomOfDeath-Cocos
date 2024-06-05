@@ -12,7 +12,7 @@ export default class State {
     private fsm: StateMachine,
     private path: string,
     private wrapMode: AnimationClip.WrapMode = AnimationClip.WrapMode.Normal,
-    speed: number = ANIMATION_SPEED,
+    private speed: number = ANIMATION_SPEED,
     private events: any[] = []
   ) {
     this.init()
@@ -32,7 +32,7 @@ export default class State {
     track.channel.curve.assignSorted(frames)
 
     this.animationClip.addTrack(track)
-    this.animationClip.duration = spriteFrames.length * ANIMATION_SPEED
+    this.animationClip.duration = spriteFrames.length * this.speed
     this.animationClip.wrapMode = this.wrapMode
     this.animationClip.name = this.path
     this.events.forEach(event => {
