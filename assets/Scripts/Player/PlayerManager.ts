@@ -160,6 +160,10 @@ export class PlayerManager extends EntityManager {
     this.move(ctrlDirection)
   }
 
+  private onAttackShake(type: SHAKE_TYPE_ENUM) {
+    EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, type)
+  }
+
   private willBlock(ctrlDirection: CTRL_DIRECTION_ENUM) {
     const {targetX: x, targetY: y, direction} = this
     const tileInfo = DataManager.Instance.tileInfo

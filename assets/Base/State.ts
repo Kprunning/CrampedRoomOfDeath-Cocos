@@ -8,7 +8,13 @@ export const ANIMATION_SPEED = 1 / 8
 export default class State {
   private animationClip: AnimationClip
 
-  constructor(private fsm: StateMachine, private path: string, private wrapMode: AnimationClip.WrapMode = AnimationClip.WrapMode.Normal, speed: number = ANIMATION_SPEED) {
+  constructor(
+    private fsm: StateMachine,
+    private path: string,
+    private wrapMode: AnimationClip.WrapMode = AnimationClip.WrapMode.Normal,
+    speed: number = ANIMATION_SPEED,
+    private events: any[] = []
+  ) {
     this.init()
   }
 
@@ -29,6 +35,11 @@ export default class State {
     this.animationClip.duration = spriteFrames.length * ANIMATION_SPEED
     this.animationClip.wrapMode = this.wrapMode
     this.animationClip.name = this.path
+    this.events.forEach(event => {
+      this.animationClip.events.push(event)
+    })
+    // 提交事件数据的修改
+    this.animationClip.events = this.animationClip.events
   }
 
   async run() {
