@@ -89,7 +89,7 @@ export default class SpikesManager extends Component {
       return
     }
     const {x: playerX, y: playerY} = player
-    if (this.x === playerX && this.y === playerY) {
+    if (this.x === playerX && this.y === playerY && this.count === this.totalCount) {
       EventManager.Instance.emit(EVENT_ENUM.ATTACK_PLAYER, ENTITY_STATE_ENUM.DEATH)
     }
   }
