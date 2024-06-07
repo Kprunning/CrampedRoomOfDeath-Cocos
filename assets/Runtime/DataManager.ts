@@ -1,4 +1,4 @@
-import {ITiler} from '../Levels'
+import {ILevel, ITiler} from '../Levels'
 import Singleton from '../Base/Singleton'
 import TileManager from '../Scripts/Tile/TileManager'
 import {PlayerManager} from '../Scripts/Player/PlayerManager'
@@ -7,6 +7,8 @@ import {DoorManager} from '../Scripts/Door/DoorManager'
 import BurstManager from '../Scripts/Burst/BurstManager'
 import SpikesManager from '../Scripts/Spikes/SpikesManager'
 import SmokeManager from '../Scripts/Smoke/SmokeManager'
+
+export type IRecord = Omit<ILevel, 'mapInfo'>
 
 export default class DataManager extends Singleton {
   mapInfo: Array<Array<ITiler>>
@@ -20,6 +22,7 @@ export default class DataManager extends Singleton {
   busts: BurstManager[]
   spikes: SpikesManager[]
   smokes: SmokeManager[]
+  records: IRecord[]
 
   static get Instance(): DataManager {
     return super.GetInstance<DataManager>()
@@ -36,5 +39,6 @@ export default class DataManager extends Singleton {
     this.spikes = []
     this.busts = []
     this.smokes = []
+    this.records = []
   }
 }

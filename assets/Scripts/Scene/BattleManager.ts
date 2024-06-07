@@ -3,7 +3,7 @@ import {TileMapManager} from '../Tile/TileMapManager'
 import {createUINode} from '../../Utils'
 import levels, {ILevel} from '../../Levels'
 import {TILE_HEIGHT, TILE_WIDTH} from '../Tile/TileManager'
-import DataManager from '../../Runtime/DataManager'
+import DataManager, {IRecord} from '../../Runtime/DataManager'
 import EventManager from '../../Runtime/EventManager'
 import {DIRECTION_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM} from '../../Enums'
 import {PlayerManager} from '../Player/PlayerManager'
@@ -191,6 +191,96 @@ export class BattleManager extends Component {
     const {x: doorX, y: doorY, state: doorState} = DataManager.Instance.door
     if (playerX === doorX && playerY === doorY && doorState === ENTITY_STATE_ENUM.DEATH) {
       EventManager.Instance.emit(EVENT_ENUM.NEXT_LEVEL)
+    }
+  }
+
+  record() {
+    const item: IRecord = {
+      player: {
+        x: DataManager.Instance.player.x,
+        y: DataManager.Instance.player.y,
+        direction: DataManager.Instance.player.direction,
+        state: DataManager.Instance.player.state,
+        type: DataManager.Instance.player.type
+      },
+      enemies: DataManager.Instance.enemies.map(enemy => {
+        return {
+          x: enemy.x,
+          y: enemy.y,
+          direction: enemy.direction,
+          state: enemy.state,
+          type: enemy.type
+        }
+      }),
+      door: {
+        x: DataManager.Instance.door.x,
+        y: DataManager.Instance.door.y,
+        state: DataManager.Instance.door.state,
+        type: DataManager.Instance.door.type,
+        direction: DataManager.Instance.door.direction
+      },
+      bursts: DataManager.Instance.busts.map(burst => {
+        return {
+          x: burst.x,
+          y: burst.y,
+          state: burst.state,
+          type: burst.type,
+          direction: burst.direction
+        }
+      }),
+      spikes: DataManager.Instance.spikes.map(spike => {
+        return {
+          x: spike.x,
+          y: spike.y,
+          count: spike.count,
+          type: spike.type
+        }
+      })
+    }
+    DataManager.Instance.records.push(item)
+  }
+
+
+  revoke() {
+    const record = DataManager.Instance.records.pop()
+    if (record) {
+      DataManager.Instance.player.x = DataManager.Instance.player.targetX = record.player.x
+      DataManager.Instance.player.y = DataManager.Instance.player.targetY = record.player.y
+      DataManager.Instance.player.direction = record.player.direction
+      DataManager.Instance.player.state = record.player.state
+      DataManager.Instance.player.type = record.player.type
+
+      DataManager.Instance.door.x = record.door.x
+      DataManager.Instance.door.y = record.door.y
+      DataManager.Instance.door.state = record.door.state
+      DataManager.Instance.door.type = record.door.type
+      DataManager.Instance.door.direction = record.door.direction
+
+      for (let i = 0; i < DataManager.Instance.enemies.length; i++) {
+        const enemy = DataManager.Instance.enemies[i]
+        enemy.x = record.enemies[i].x
+        enemy.y = record.enemies[i].y
+        enemy.direction = record.enemies[i].direction
+        enemy.state = record.enemies[i].state
+        enemy.type = record.enemies[i].type
+      }
+
+      for (let i = 0; i < DataManager.Instance.busts.length; i++) {
+        const burst = DataManager.Instance.busts[i]
+        burst.x = record.bursts[i].x
+        burst.y = record.bursts[i].y
+        burst.state = record.bursts[i].state
+        burst.type = record.bursts[i].type
+        burst.direction = record.bursts[i].direction
+      }
+
+      for (let i = 0; i < DataManager.Instance.spikes.length; i++) {
+        const spike = DataManager.Instance.spikes[i]
+        spike.x = record.spikes[i].x
+        spike.y = record.spikes[i].y
+        spike.count = record.spikes[i].count
+        spike.type = record.spikes[i].type
+      }
     }
   }
 
