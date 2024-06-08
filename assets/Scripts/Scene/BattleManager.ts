@@ -1,11 +1,11 @@
-import {_decorator, Component, Node} from 'cc'
+import {_decorator, Component, director, Node} from 'cc'
 import {TileMapManager} from '../Tile/TileMapManager'
 import {createUINode} from '../../Utils'
 import levels, {ILevel} from '../../Levels'
 import {TILE_HEIGHT, TILE_WIDTH} from '../Tile/TileManager'
 import DataManager, {IRecord} from '../../Runtime/DataManager'
 import EventManager from '../../Runtime/EventManager'
-import {DIRECTION_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM} from '../../Enums'
+import {DIRECTION_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM, SCENE_ENUM} from '../../Enums'
 import {PlayerManager} from '../Player/PlayerManager'
 import WoodenSkeletonManager from '../WoodenSkeleton/WoodenSkeletonManager'
 import IronSkeletonManager from '../IronSkeleton/IronSkeletonManager'
@@ -23,6 +23,7 @@ export class BattleManager extends Component {
   private stage: Node
   private level: ILevel
   private smokeLayer: Node
+  private isInit = false
 
   onLoad() {
     EventManager.Instance.on(EVENT_ENUM.NEXT_LEVEL, this.nextLevel, this)
@@ -30,6 +31,8 @@ export class BattleManager extends Component {
     EventManager.Instance.on(EVENT_ENUM.SHOW_SMOKE, this.generateSmoke, this)
     EventManager.Instance.on(EVENT_ENUM.RECORD_STEP, this.record, this)
     EventManager.Instance.on(EVENT_ENUM.REVOKE_STEP, this.revoke, this)
+    EventManager.Instance.on(EVENT_ENUM.RESTART_LEVEL, this.initLevel, this)
+    EventManager.Instance.on(EVENT_ENUM.OUT_BATTLE, this.outBattle, this)
   }
 
   onDestroy() {
@@ -38,6 +41,8 @@ export class BattleManager extends Component {
     EventManager.Instance.off(EVENT_ENUM.SHOW_SMOKE, this.generateSmoke)
     EventManager.Instance.off(EVENT_ENUM.RECORD_STEP, this.record)
     EventManager.Instance.off(EVENT_ENUM.REVOKE_STEP, this.revoke)
+    EventManager.Instance.off(EVENT_ENUM.RESTART_LEVEL, this.initLevel)
+    EventManager.Instance.off(EVENT_ENUM.OUT_BATTLE, this.outBattle)
   }
 
 
@@ -49,7 +54,9 @@ export class BattleManager extends Component {
   private async initLevel() {
     const level = levels[`level${DataManager.Instance.levelIndex}`]
     if (level) {
-      await FaderManager.Instance.fadeIn()
+      if (this.isInit) {
+        await FaderManager.Instance.fadeIn()
+      }
       this.clearLevel()
       this.level = level
       const {mapInfo} = level
@@ -68,6 +75,7 @@ export class BattleManager extends Component {
       await this.generatePlayer()
 
       await FaderManager.Instance.fadeOut()
+      this.isInit = true
     }
   }
 
@@ -198,6 +206,7 @@ export class BattleManager extends Component {
     }
   }
 
+  // 记录玩家操作
   record() {
     const item: IRecord = {
       player: {
@@ -247,7 +256,7 @@ export class BattleManager extends Component {
     DataManager.Instance.records.push(item)
   }
 
-
+  // 撤销操作
   revoke() {
     const record = DataManager.Instance.records.pop()
     if (record) {
@@ -289,6 +298,12 @@ export class BattleManager extends Component {
         spike.type = record.spikes[i].type
       }
     }
+  }
+
+  // 回到开始界面
+  async outBattle() {
+    await FaderManager.Instance.fadeIn()
+    director.loadScene(SCENE_ENUM.START)
   }
 
 }
