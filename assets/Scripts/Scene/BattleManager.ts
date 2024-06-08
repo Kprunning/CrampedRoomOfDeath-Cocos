@@ -28,12 +28,16 @@ export class BattleManager extends Component {
     EventManager.Instance.on(EVENT_ENUM.NEXT_LEVEL, this.nextLevel, this)
     EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END, this.checkArrived, this)
     EventManager.Instance.on(EVENT_ENUM.SHOW_SMOKE, this.generateSmoke, this)
+    EventManager.Instance.on(EVENT_ENUM.RECORD_STEP, this.record, this)
+    EventManager.Instance.on(EVENT_ENUM.REVOKE_STEP, this.revoke, this)
   }
 
   onDestroy() {
     EventManager.Instance.off(EVENT_ENUM.NEXT_LEVEL, this.nextLevel)
     EventManager.Instance.off(EVENT_ENUM.PLAYER_MOVE_END, this.checkArrived)
     EventManager.Instance.off(EVENT_ENUM.SHOW_SMOKE, this.generateSmoke)
+    EventManager.Instance.off(EVENT_ENUM.RECORD_STEP, this.record)
+    EventManager.Instance.off(EVENT_ENUM.REVOKE_STEP, this.revoke)
   }
 
 
@@ -200,7 +204,10 @@ export class BattleManager extends Component {
         x: DataManager.Instance.player.x,
         y: DataManager.Instance.player.y,
         direction: DataManager.Instance.player.direction,
-        state: DataManager.Instance.player.state,
+        // todo 有疑问
+        state: DataManager.Instance.player.state === ENTITY_STATE_ENUM.DEATH
+        || DataManager.Instance.player.state === ENTITY_STATE_ENUM.AIR_DEATH
+          ? DataManager.Instance.player.state : ENTITY_STATE_ENUM.IDLE,
         type: DataManager.Instance.player.type
       },
       enemies: DataManager.Instance.enemies.map(enemy => {
