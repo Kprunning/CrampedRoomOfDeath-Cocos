@@ -14,7 +14,7 @@ export class StartManager extends Component {
 
   private async handleStart() {
     await FaderManager.Instance.fadeIn(300)
-    director.loadScene(SCENE_ENUM.BATTLE)
+    director.loadScene(SCENE_ENUM.Battle)
   }
 }
 

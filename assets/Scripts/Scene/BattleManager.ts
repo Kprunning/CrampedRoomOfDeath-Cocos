@@ -303,7 +303,7 @@ export class BattleManager extends Component {
   // 回到开始界面
   async outBattle() {
     await FaderManager.Instance.fadeIn()
-    director.loadScene(SCENE_ENUM.START)
+    director.loadScene(SCENE_ENUM.Start)
   }
 
 }
