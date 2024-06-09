@@ -148,7 +148,7 @@ export class PlayerManager extends EntityManager {
         } else if (this.direction === DIRECTION_ENUM.LEFT) {
           EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.BOTTOM)
         }
-      }else if (ctrlDirection === CTRL_DIRECTION_ENUM.TURN_RIGHT) {
+      } else if (ctrlDirection === CTRL_DIRECTION_ENUM.TURN_RIGHT) {
         if (this.direction === DIRECTION_ENUM.TOP) {
           EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.RIGHT)
         } else if (this.direction === DIRECTION_ENUM.BOTTOM) {
@@ -195,7 +195,7 @@ export class PlayerManager extends EntityManager {
           weaponNextX = x + 1
           weaponNextY = y - 1
         } else if (direction === DIRECTION_ENUM.LEFT) {
-
+          playerNextX = x
           playerNextY = y - 1
           weaponNextX = x - 1
           weaponNextY = y - 1
@@ -335,6 +335,7 @@ export class PlayerManager extends EntityManager {
     const tileInfo = DataManager.Instance.tileInfo
     const playerNextTile: TileManager = tileInfo[playerNextX]?.[playerNextY]
     const weaponNextTile: TileManager = tileInfo[weaponNextX]?.[weaponNextY]
+
 
     // 检测是否经过地裂
     const bursts = DataManager.Instance.busts.filter(burst => burst.state !== ENTITY_STATE_ENUM.DEATH)
