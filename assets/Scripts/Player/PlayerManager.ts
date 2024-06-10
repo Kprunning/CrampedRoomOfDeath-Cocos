@@ -1,5 +1,12 @@
 import {_decorator} from 'cc'
-import {CTRL_DIRECTION_ENUM, DIRECTION_ENUM, ENTITY_STATE_ENUM, EVENT_ENUM, SHAKE_TYPE_ENUM} from '../../Enums'
+import {
+  AUDIO_NAME_ENUM,
+  CTRL_DIRECTION_ENUM,
+  DIRECTION_ENUM,
+  ENTITY_STATE_ENUM,
+  EVENT_ENUM,
+  SHAKE_TYPE_ENUM
+} from '../../Enums'
 import EventManager from '../../Runtime/EventManager'
 import {PlayerStateMachine} from './PlayerStateMachine'
 import EntityManager from '../../Base/EntityManager'
@@ -123,6 +130,7 @@ export class PlayerManager extends EntityManager {
     if (id) {
       EventManager.Instance.emit(EVENT_ENUM.RECORD_STEP)
       this.state = ENTITY_STATE_ENUM.ATTACK
+      EventManager.Instance.emit(EVENT_ENUM.PLAY_AUDIO, AUDIO_NAME_ENUM.PLAYER_ATTACK)
       EventManager.Instance.emit(EVENT_ENUM.ATTACK_ENEMY, id)
       EventManager.Instance.emit(EVENT_ENUM.DOOR_OPEN)
       EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END)
@@ -159,6 +167,7 @@ export class PlayerManager extends EntityManager {
           EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.TOP)
         }
       }
+      EventManager.Instance.emit(EVENT_ENUM.PLAY_AUDIO, AUDIO_NAME_ENUM.PLAYER_BLOCKED)
       return
     }
     this.move(ctrlDirection)

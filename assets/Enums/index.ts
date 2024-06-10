@@ -25,6 +25,7 @@ export enum EVENT_ENUM {
   REVOKE_STEP = 'REVOKE_STEP',
   RESTART_LEVEL = 'RESTART_LEVEL',
   OUT_BATTLE = 'OUT_BATTLE',
+  PLAY_AUDIO = 'PLAY_AUDIO'
 }
 
 export enum CTRL_DIRECTION_ENUM {
@@ -142,4 +143,9 @@ export enum SCENE_ENUM {
   Start = 'Start',
   Battle = 'Battle',
   Loading = 'Loading'
+}
+
+export enum AUDIO_NAME_ENUM {
+  PLAYER_BLOCKED = 'playerBlocked',
+  PLAYER_ATTACK = 'playerAttack'
 }
