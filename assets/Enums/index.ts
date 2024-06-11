@@ -147,5 +147,6 @@ export enum SCENE_ENUM {
 
 export enum AUDIO_NAME_ENUM {
   PLAYER_BLOCKED = 'playerBlocked',
-  PLAYER_ATTACK = 'playerAttack'
+  PLAYER_ATTACK = 'playerAttack',
+  NEXT_LEVEL = 'nextLevel'
 }

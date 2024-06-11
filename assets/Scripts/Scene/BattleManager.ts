@@ -5,7 +5,7 @@ import levels, {ILevel} from '../../Levels'
 import {TILE_HEIGHT, TILE_WIDTH} from '../Tile/TileManager'
 import DataManager, {IRecord} from '../../Runtime/DataManager'
 import EventManager from '../../Runtime/EventManager'
-import {DIRECTION_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM, SCENE_ENUM} from '../../Enums'
+import {AUDIO_NAME_ENUM, DIRECTION_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM, SCENE_ENUM} from '../../Enums'
 import {PlayerManager} from '../Player/PlayerManager'
 import WoodenSkeletonManager from '../WoodenSkeleton/WoodenSkeletonManager'
 import IronSkeletonManager from '../IronSkeleton/IronSkeletonManager'
@@ -203,6 +203,7 @@ export class BattleManager extends Component {
     const {x: doorX, y: doorY, state: doorState} = DataManager.Instance.door
     if (playerX === doorX && playerY === doorY && doorState === ENTITY_STATE_ENUM.DEATH) {
       EventManager.Instance.emit(EVENT_ENUM.NEXT_LEVEL)
+      EventManager.Instance.emit(EVENT_ENUM.PLAY_AUDIO, AUDIO_NAME_ENUM.NEXT_LEVEL)
     }
   }
 
