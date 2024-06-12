@@ -440,6 +440,7 @@ export class PlayerManager extends EntityManager {
 
   private onDead(type: ENTITY_STATE_ENUM) {
     this.state = type
+    EventManager.Instance.emit(EVENT_ENUM.PLAY_AUDIO, AUDIO_NAME_ENUM.PLAYER_DEATH)
   }
 
   private willAttack(ctrlDirection: CTRL_DIRECTION_ENUM) {
@@ -470,6 +471,7 @@ export class PlayerManager extends EntityManager {
   }
 
   private showSmoke(ctrlDirection: CTRL_DIRECTION_ENUM) {
+    EventManager.Instance.emit(EVENT_ENUM.PLAY_AUDIO, AUDIO_NAME_ENUM.PLAYER_MOVE)
     EventManager.Instance.emit(EVENT_ENUM.SHOW_SMOKE, this.x, this.y, ctrlDirection)
   }
 }

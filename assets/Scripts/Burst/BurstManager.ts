@@ -1,5 +1,5 @@
 import {_decorator, UITransform} from 'cc'
-import {ENTITY_STATE_ENUM, EVENT_ENUM, SHAKE_TYPE_ENUM} from '../../Enums'
+import {AUDIO_NAME_ENUM, ENTITY_STATE_ENUM, EVENT_ENUM, SHAKE_TYPE_ENUM} from '../../Enums'
 import BurstStateMachine from './BurstStateMachine'
 import EventManager from '../../Runtime/EventManager'
 import DataManager from '../../Runtime/DataManager'
@@ -40,8 +40,10 @@ export default class BurstManager extends EnemyManager {
     // 当玩家在敌人周围时,进行攻击
     if (this.x === playerX && this.y === playerY && this.state === ENTITY_STATE_ENUM.IDLE) {
       this.state = ENTITY_STATE_ENUM.ATTACK
+      EventManager.Instance.emit(EVENT_ENUM.PLAY_AUDIO, AUDIO_NAME_ENUM.BURST_ATTACK)
     } else if (this.state === ENTITY_STATE_ENUM.ATTACK) {
       this.state = ENTITY_STATE_ENUM.DEATH
+      EventManager.Instance.emit(EVENT_ENUM.PLAY_AUDIO, AUDIO_NAME_ENUM.BURST_DEATH)
       // 地裂陷阱触发后,屏幕向下震动
       EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.BOTTOM)
       if (this.x === playerX && this.y === playerY) {

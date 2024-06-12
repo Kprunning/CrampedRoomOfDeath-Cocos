@@ -1,7 +1,7 @@
 import {_decorator} from 'cc'
 import EntityManager from './EntityManager'
 import EventManager from '../Runtime/EventManager'
-import {DIRECTION_ENUM, ENTITY_STATE_ENUM, EVENT_ENUM} from '../Enums'
+import {AUDIO_NAME_ENUM, DIRECTION_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM} from '../Enums'
 import DataManager from '../Runtime/DataManager'
 import {IEntity} from '../Levels'
 
@@ -69,6 +69,11 @@ export default class EnemyManager extends EntityManager {
 
     if (id === this.id) {
       this.state = ENTITY_STATE_ENUM.DEATH
+      if (this.type === ENTITY_TYPE_ENUM.SKELETON_WOODEN) {
+        EventManager.Instance.emit(EVENT_ENUM.PLAY_AUDIO, AUDIO_NAME_ENUM.WOODEN_SKELETON_DEATH)
+      } else if (this.type === ENTITY_TYPE_ENUM.SKELETON_IRON) {
+        EventManager.Instance.emit(EVENT_ENUM.PLAY_AUDIO, AUDIO_NAME_ENUM.IRON_SKELETON_DEATH)
+      }
     }
   }
 }

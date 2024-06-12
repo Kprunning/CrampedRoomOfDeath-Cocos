@@ -1,5 +1,5 @@
 import {_decorator} from 'cc'
-import {ENTITY_STATE_ENUM, EVENT_ENUM} from '../../Enums'
+import {AUDIO_NAME_ENUM, ENTITY_STATE_ENUM, EVENT_ENUM} from '../../Enums'
 import WoodenSkeletonStateMachine from './WoodenSkeletonStateMachine'
 import EventManager from '../../Runtime/EventManager'
 import DataManager from '../../Runtime/DataManager'
@@ -34,6 +34,7 @@ export default class WoodenSkeletonManager extends EnemyManager {
     if (((this.x === playerX && Math.abs(playerY - this.y) <= 1) || (this.y === playerY && Math.abs(playerX - this.x) <= 1))
       && (playerState !== ENTITY_STATE_ENUM.DEATH && playerState !== ENTITY_STATE_ENUM.AIR_DEATH)) {
       this.state = ENTITY_STATE_ENUM.ATTACK
+      EventManager.Instance.emit(EVENT_ENUM.PLAY_AUDIO, AUDIO_NAME_ENUM.WOODEN_SKELETON_ATTACK)
       EventManager.Instance.emit(EVENT_ENUM.ATTACK_PLAYER, ENTITY_STATE_ENUM.DEATH)
     } else {
       this.state = ENTITY_STATE_ENUM.IDLE

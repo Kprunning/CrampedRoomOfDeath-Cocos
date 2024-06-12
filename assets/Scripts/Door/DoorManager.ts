@@ -3,7 +3,7 @@ import EntityManager from '../../Base/EntityManager'
 import DoorStateMachine from './DoorStateMachine'
 import {IEntity} from '../../Levels'
 import EventManager from '../../Runtime/EventManager'
-import {ENTITY_STATE_ENUM, EVENT_ENUM} from '../../Enums'
+import {AUDIO_NAME_ENUM, ENTITY_STATE_ENUM, EVENT_ENUM} from '../../Enums'
 import DataManager from '../../Runtime/DataManager'
 
 const {ccclass, property} = _decorator
@@ -27,6 +27,7 @@ export class DoorManager extends EntityManager {
   private onDoorOpen() {
     if (this.state !== ENTITY_STATE_ENUM.DEATH && DataManager.Instance.enemies.every(enemy => enemy.state === ENTITY_STATE_ENUM.DEATH)) {
       this.state = ENTITY_STATE_ENUM.DEATH
+      EventManager.Instance.emit(EVENT_ENUM.PLAY_AUDIO, AUDIO_NAME_ENUM.DOOR_OPEN)
     }
   }
 }

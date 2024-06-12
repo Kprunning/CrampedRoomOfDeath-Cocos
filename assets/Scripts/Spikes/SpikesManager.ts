@@ -1,5 +1,5 @@
 import {_decorator, Component, Sprite, UITransform} from 'cc'
-import {ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM, PARAMS_NAME_ENUM, SPIKES_TYPE_MAP_TOTAL_COUNT_ENUM} from '../../Enums'
+import {AUDIO_NAME_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM, PARAMS_NAME_ENUM, SPIKES_TYPE_MAP_TOTAL_COUNT_ENUM} from '../../Enums'
 import StateMachine from '../../Base/StateMachine'
 import {ISpikes} from '../../Levels'
 import {TILE_HEIGHT, TILE_WIDTH} from '../Tile/TileManager'
@@ -89,6 +89,9 @@ export default class SpikesManager extends Component {
       return
     }
     const {x: playerX, y: playerY} = player
+    if (this.count === this.totalCount) {
+      EventManager.Instance.emit(EVENT_ENUM.PLAY_AUDIO, AUDIO_NAME_ENUM.SPIKES_ATTACK)
+    }
     if (this.x === playerX && this.y === playerY && this.count === this.totalCount) {
       EventManager.Instance.emit(EVENT_ENUM.ATTACK_PLAYER, ENTITY_STATE_ENUM.DEATH)
     }

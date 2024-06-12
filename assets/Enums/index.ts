@@ -142,11 +142,21 @@ export enum SHAKE_TYPE_ENUM {
 export enum SCENE_ENUM {
   Start = 'Start',
   Battle = 'Battle',
-  Loading = 'Loading'
+  Loading = 'Loading',
+  FinishGame = 'FinishGame',
 }
 
 export enum AUDIO_NAME_ENUM {
   PLAYER_BLOCKED = 'playerBlocked',
   PLAYER_ATTACK = 'playerAttack',
-  NEXT_LEVEL = 'nextLevel'
+  NEXT_LEVEL = 'nextLevel',
+  PLAYER_MOVE = 'playerMove',
+  WOODEN_SKELETON_ATTACK = 'woodenSkeletonAttack',
+  DOOR_OPEN = 'doorOpen',
+  WOODEN_SKELETON_DEATH = 'woodenSkeletonDeath',
+  IRON_SKELETON_DEATH = 'ironSkeletonDeath',
+  SPIKES_ATTACK = 'spikesAttack',
+  PLAYER_DEATH = 'playerDeath',
+  BURST_ATTACK = 'burstAttack',
+  BURST_DEATH = 'burstDeath',
 }

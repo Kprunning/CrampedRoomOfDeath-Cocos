@@ -76,6 +76,9 @@ export class BattleManager extends Component {
 
       await FaderManager.Instance.fadeOut()
       this.isInit = true
+    } else {
+      // 当没有下一关时,玩家已通关
+      director.loadScene(SCENE_ENUM.FinishGame)
     }
   }
 
